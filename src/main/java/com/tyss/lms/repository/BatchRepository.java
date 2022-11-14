@@ -6,12 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.tyss.lms.entity.BatchDetails;
+import com.tyss.lms.entity.MentorDetails;
 
 @Repository
 public interface BatchRepository extends JpaRepository<BatchDetails, Long> {
 
-	Optional<BatchDetails> findByBatchId(Long batchId);
+	public Optional<BatchDetails> findByBatchId(Long batchId);
 
-	BatchDetails findByBatchIdOrBatchName(Long batchId, String batchName);
+	public BatchDetails findByBatchIdOrBatchName(Long batchId, String batchName);
+
+	public Optional<BatchDetails> findByEmployeeId(String batchId);
+
+	public MentorDetails findByEmployeeIdOrMentorName(String employeeId, String mentorName);
 
 }

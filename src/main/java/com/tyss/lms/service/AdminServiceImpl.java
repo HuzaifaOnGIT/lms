@@ -6,8 +6,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.tyss.lms.dto.BatchDto;
+import com.tyss.lms.dto.MentorDto;
 import com.tyss.lms.entity.BatchDetails;
+import com.tyss.lms.entity.MentorDetails;
 import com.tyss.lms.repository.BatchRepository;
+import com.tyss.lms.repository.MentorRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,25 +22,25 @@ public class AdminServiceImpl implements AdminService {
 
 	private BatchRepository batchRepository;
 
+	private MentorRepository mentorRepository;
+	
 	@Override
 	public BatchDetails addBatch(BatchDto batchDto) {
 		String methodName = "addBatch";
 		BatchDetails entity = null;
-		BatchDetails save = null;
 		try {
 
 			entity = new BatchDetails();
 			BeanUtils.copyProperties(batchDto, entity);
 			Optional<BatchDetails> findById = batchRepository.findById(entity.getBatchId());
-			int resumeNo = 1;
 			if (findById.isPresent()) {
 
 				log.error(methodName, "Batch already exists with this Id", entity);
 				throw new RuntimeException("Batch already exists with this Id");
 			}
 
-			save = batchRepository.save(entity);
-			if (save == null) {
+			entity = batchRepository.save(entity);
+			if (entity == null) {
 				log.info(methodName, " Null value received ", entity);
 				throw new RuntimeException("Batch not saved");
 
@@ -47,7 +50,7 @@ public class AdminServiceImpl implements AdminService {
 			e.printStackTrace();
 			log.error(methodName + e.getMessage());
 		}
-		return save;
+		return entity;
 	}
 
 	@Override
@@ -107,5 +110,86 @@ public class AdminServiceImpl implements AdminService {
 			throw e;
 		}
 	}
+
+	@Override
+	public MentorDetails updateMentor(MentorDto mentorDto) {
+		String methodName = "updateBatch";
+		MentorDetails save = null;
+
+		Optional<MentorDetails> findById = mentorRepository.findByEmployeeId(mentorDto.getEmployeeId());
+		try {
+			if (findById.isEmpty()) {
+				throw new RuntimeException("Mentor Not Found Select Correct BatchID");
+			} else {
+				findById.get().setEmailId(mentorDto.getEmailId());
+				findById.get().setMentorName(mentorDto.getMentorName());
+				findById.get().setSkills(mentorDto.getSkills());
+			
+				
+				 save = mentorRepository.save(findById.get());
+			}
+		} catch (RuntimeException e) {
+			log.error(methodName + e.getMessage());
+		}
+		return save;
+	}
+
+	@Override
+	public MentorDetails searchMentor(String employeeId, String mentorName) {
+		String methodName = "searchMentor";
+		MentorDetails search = null;
+		try {
+			search = batchRepository.findByEmployeeIdOrMentorName(employeeId, mentorName);
+			if (search == null) {
+				throw new RuntimeException("Mentor Not Found");
+			}
+		} catch (Exception e) {
+			log.error(methodName + "==========>" + e.getMessage());
+			e.printStackTrace();
+			;
+		}
+		return search;
+	}
+
+	@Override
+	public void deleteMentor(String id) {
+		try {
+			Optional<MentorDetails> findById = mentorRepository.findByEmployeeId(id);
+			if (!findById.isPresent()) {
+				throw new RuntimeException("Mentor Details Not Present On This ID");
+			} else {
+				mentorRepository.deleteByEmployeeId(id);
+				;
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public MentorDetails addMentor(MentorDto mentorDto) {
+		String methodName = "addMentor";
+		MentorDetails entity = null;
+		try {
+
+			entity = new MentorDetails();
+			BeanUtils.copyProperties(mentorDto, entity);
+		
+
+			entity = mentorRepository.save(entity);
+			if (entity == null) {
+				log.info(methodName, "==========> Null value received ", entity);
+				throw new RuntimeException("Mentor not saved");
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error(methodName + e.getMessage());
+		}
+		return entity;
+	}
+
 
 }

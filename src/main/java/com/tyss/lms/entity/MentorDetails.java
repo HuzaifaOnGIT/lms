@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 public class MentorDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int mockDetailsId;
+	private Long mentorDetailsId;
 	private String mentorName;
 	private String emailId;
 	private String EmployeeId;
