@@ -29,10 +29,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			entity = new EmployeeEntity();
 			BeanUtils.copyProperties(employeeDto, entity);
-			List<EmployeeEntity> list = employeeRepository.findAllByEmployeeId(entity.getEmployeeId());
-			int resumeNo = 1;
-			if (!list.isEmpty()) {
-
+			Optional<EmployeeEntity> findByEmployeeId = employeeRepository.findByEmployeeId(entity.getEmployeeId());
+			
+			if (findByEmployeeId.isEmpty()) {
 				log.error(methodName, "EmployeeId already exists", entity);
 				throw new RuntimeException("EmployeeId already exists");
 			}
@@ -69,8 +68,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 				findById.get().setEmployeeExperienceInfos(employeeDto.getEmployeeExperienceInfos());
 				findById.get().setEducationInfos(employeeDto.getEducationInfos());
 				findById.get().setContactInfos(employeeDto.getContactInfos());
-				 save = employeeRepository.save(findById.get());
-				
+				save = employeeRepository.save(findById.get());
+
 			}
 		} catch (RuntimeException e) {
 			log.error(methodName + e.getMessage());

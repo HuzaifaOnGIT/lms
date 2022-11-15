@@ -17,4 +17,5 @@ public interface MentorDetailRepository extends JpaRepository<MentorDetails, Lon
 
 	public List<MentorDetails> findAllByEmployeeIdOrMentorName(String parameter, String parameter2);
 
+
 }

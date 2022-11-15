@@ -140,11 +140,11 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public MentorDetails searchMentor(String employeeId, String mentorName) {
+	public List<MentorDetails> searchMentor(String employeeId, String mentorName) {
 		String methodName = "searchMentor";
-		MentorDetails search = null;
+		List<MentorDetails> search = null;
 		try {
-			search = batchRepository.findByEmployeeIdOrMentorName(employeeId, mentorName);
+			search = mentorRepository.findAllByEmployeeIdOrMentorName(employeeId, mentorName);
 			if (search == null) {
 				throw new RuntimeException("Mentor Not Found");
 			}

@@ -1,5 +1,7 @@
 package com.tyss.lms.resource;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -115,7 +117,7 @@ public class AdminController {
 	@GetMapping("/mentor/search/{employeeId},{mentorName}")
 	public ResponseEntity<ResponseMessage> searchMentor(@PathVariable String employeeId, @PathVariable String mentorName) {
 
-		MentorDetails searchResult=null;
+		List<MentorDetails> searchResult=null;
 		try {
 			searchResult = adminService.searchMentor(employeeId, mentorName);
 		} catch (Exception e) {

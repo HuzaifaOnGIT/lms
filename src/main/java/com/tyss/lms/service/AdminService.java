@@ -1,5 +1,7 @@
 package com.tyss.lms.service;
 
+import java.util.List;
+
 import com.tyss.lms.dto.BatchDto;
 import com.tyss.lms.dto.GlobalSearchDTO;
 import com.tyss.lms.dto.MentorDto;
@@ -18,7 +20,7 @@ public interface AdminService {
 
 	public MentorDetails updateMentor(MentorDto mentorDto);
 
-	public MentorDetails searchMentor(String employeeId, String mentorName);
+	public List<MentorDetails> searchMentor(String employeeId, String mentorName);
 
 	public void deleteMentor(String id);
 

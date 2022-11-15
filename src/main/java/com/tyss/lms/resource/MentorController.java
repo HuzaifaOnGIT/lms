@@ -17,6 +17,7 @@ import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
 import com.tyss.lms.dto.ResponseMessage;
 import com.tyss.lms.entity.BatchDetails;
+import com.tyss.lms.entity.EmployeeEntity;
 import com.tyss.lms.entity.MockDetails;
 import com.tyss.lms.entity.MockRatings;
 import com.tyss.lms.service.MentorService;
@@ -73,7 +74,7 @@ public class MentorController {
 	@PostMapping("/employee/changestatus/{employeeId},{status}")
 	public ResponseEntity<ResponseMessage> changeStatus(@PathVariable String employeeId, @PathVariable EmployeeStatus status) {
 
-		MockDetails addMock = mockService.changeStatus( employeeId, status);
+		  EmployeeEntity addMock = mockService.changeStatus( employeeId, status);
 		if (addMock != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, addMock);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);

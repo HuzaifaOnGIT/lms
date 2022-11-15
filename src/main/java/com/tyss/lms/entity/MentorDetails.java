@@ -28,7 +28,7 @@ public class MentorDetails {
 	private Long mentorDetailsId;
 	private String mentorName;
 	private String emailId;
-	private String EmployeeId;
+	private String employeeId;
 	@Convert(converter = ListToStringUtil.class)
 	private List<String> skills;
 
