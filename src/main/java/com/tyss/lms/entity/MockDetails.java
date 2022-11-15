@@ -27,7 +27,8 @@ public class MockDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int mockDetailsId;
+	private Long mockDetailsId;
+	private int mockNo;
 	private Integer batchId;
 	private String batchName;
 	private String mentorName;

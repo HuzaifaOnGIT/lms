@@ -1,16 +1,20 @@
 package com.tyss.lms.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.tyss.lms.dto.BatchDto;
+import com.tyss.lms.dto.GlobalSearchDTO;
 import com.tyss.lms.dto.MentorDto;
 import com.tyss.lms.entity.BatchDetails;
+import com.tyss.lms.entity.EmployeeEntity;
 import com.tyss.lms.entity.MentorDetails;
 import com.tyss.lms.repository.BatchRepository;
-import com.tyss.lms.repository.MentorRepository;
+import com.tyss.lms.repository.EmployeeRepository;
+import com.tyss.lms.repository.MentorDetailRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +26,10 @@ public class AdminServiceImpl implements AdminService {
 
 	private BatchRepository batchRepository;
 
-	private MentorRepository mentorRepository;
-	
+	private MentorDetailRepository mentorRepository;
+
+	private EmployeeRepository employeeRepository;
+
 	@Override
 	public BatchDetails addBatch(BatchDto batchDto) {
 		String methodName = "addBatch";
@@ -124,9 +130,8 @@ public class AdminServiceImpl implements AdminService {
 				findById.get().setEmailId(mentorDto.getEmailId());
 				findById.get().setMentorName(mentorDto.getMentorName());
 				findById.get().setSkills(mentorDto.getSkills());
-			
-				
-				 save = mentorRepository.save(findById.get());
+
+				save = mentorRepository.save(findById.get());
 			}
 		} catch (RuntimeException e) {
 			log.error(methodName + e.getMessage());
@@ -175,7 +180,6 @@ public class AdminServiceImpl implements AdminService {
 
 			entity = new MentorDetails();
 			BeanUtils.copyProperties(mentorDto, entity);
-		
 
 			entity = mentorRepository.save(entity);
 			if (entity == null) {
@@ -191,5 +195,38 @@ public class AdminServiceImpl implements AdminService {
 		return entity;
 	}
 
+	@Override
+	public GlobalSearchDTO globalSearch(String parameter) {
+		String methodName = "globalSearch";
+		GlobalSearchDTO searchResult = new GlobalSearchDTO();
+		try {
+			List<EmployeeEntity> findAllByEmployeeId = employeeRepository.findAll();
+
+			findAllByEmployeeId.forEach(e -> {
+				if (e.getEmployeePrimaryInfo().getEmployeeName().equalsIgnoreCase(parameter)) {
+					searchResult.getEmployees().add(e);
+				}
+			});
+
+			if (searchResult.getEmployees().size() == 0) {
+				findAllByEmployeeId.forEach(e -> {
+					if (e.getEmployeeId().equalsIgnoreCase(parameter)) {
+						searchResult.getEmployees().add(e);
+					}
+				});
+
+				List<MentorDetails> findAllByEmployeeIdOrMentorName = mentorRepository
+						.findAllByEmployeeIdOrMentorName(parameter, parameter);
+				if (findAllByEmployeeIdOrMentorName != null) {
+					searchResult.setMentors(findAllByEmployeeIdOrMentorName);
+				}
+			}
+		} catch (Exception e) {
+			log.error(methodName + "==========>" + e.getMessage());
+			e.printStackTrace();
+			;
+		}
+		return searchResult;
+	}
 
 }

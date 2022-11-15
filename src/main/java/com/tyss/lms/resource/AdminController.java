@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tyss.lms.constants.AdminConstant;
 import com.tyss.lms.dto.BatchDto;
+import com.tyss.lms.dto.GlobalSearchDTO;
 import com.tyss.lms.dto.MentorDto;
 import com.tyss.lms.dto.ResponseMessage;
 import com.tyss.lms.entity.BatchDetails;
@@ -111,12 +112,32 @@ public class AdminController {
 				HttpStatus.OK);
 	}
 
-	@GetMapping("/mentor/search/{batchId},{batchName}")
+	@GetMapping("/mentor/search/{employeeId},{mentorName}")
 	public ResponseEntity<ResponseMessage> searchMentor(@PathVariable String employeeId, @PathVariable String mentorName) {
 
 		MentorDetails searchResult=null;
 		try {
 			searchResult = adminService.searchMentor(employeeId, mentorName);
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		if (searchResult != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS,
+					searchResult);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.SEARCH_FAIL, searchResult);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/search/{parameter}")
+	public ResponseEntity<ResponseMessage> globalSearch(@PathVariable String parameter) {
+
+		GlobalSearchDTO searchResult=null;
+		try {
+			 searchResult= adminService.globalSearch(parameter);
 		} catch (Exception e) {
 			
 			e.printStackTrace();

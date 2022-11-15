@@ -1,6 +1,7 @@
 package com.tyss.lms.service;
 
 import com.tyss.lms.dto.BatchDto;
+import com.tyss.lms.dto.GlobalSearchDTO;
 import com.tyss.lms.dto.MentorDto;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.MentorDetails;
@@ -22,5 +23,7 @@ public interface AdminService {
 	public void deleteMentor(String id);
 
 	public MentorDetails addMentor(MentorDto mentorDto);
+
+	public GlobalSearchDTO globalSearch(String parameter);
 
 }

@@ -10,8 +10,8 @@ import com.tyss.lms.entity.EmployeeEntity;
 @Repository
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
 
-	List<EmployeeEntity> findAllByEmployeeId(String employeeId);
 
 	Optional<EmployeeEntity> findByEmployeeId(String employeeId);
+
 
 }
