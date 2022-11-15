@@ -1,16 +1,20 @@
 package com.tyss.lms.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.tyss.lms.dto.EmployeeStatus;
 import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
 import com.tyss.lms.entity.BatchDetails;
+import com.tyss.lms.entity.EmployeeEntity;
 import com.tyss.lms.entity.MockDetails;
 import com.tyss.lms.entity.MockRatings;
 import com.tyss.lms.repository.BatchRepository;
+import com.tyss.lms.repository.EmployeeRepository;
 import com.tyss.lms.repository.MockRatingRepository;
 import com.tyss.lms.repository.MockRepository;
 
@@ -27,6 +31,8 @@ public class MentorServiceImpl implements MentorService {
 	private BatchRepository batchRepository;
 
 	private MockRatingRepository mockRatingRepository;
+
+	private EmployeeRepository employeeRepository;
 
 	@Override
 	public MockDetails addMock(MockDetailDto mockDto) {
@@ -93,6 +99,33 @@ public class MentorServiceImpl implements MentorService {
 			log.error(methodName + e.getMessage());
 		}
 		return entity;
+	}
+
+	@Override
+	public EmployeeEntity changeStatus(String employeeId, EmployeeStatus status) {
+		String methodName = "changeStatus";
+		EmployeeEntity entity = null;
+		try {
+
+			entity = new EmployeeEntity();
+
+			Optional<EmployeeEntity> findByEmployeeId = employeeRepository.findByEmployeeId(employeeId);
+
+			if (findByEmployeeId.isPresent()) {
+				entity = findByEmployeeId.get();
+				entity.getEmployeePrimaryInfo().setStatus(status);
+
+				employeeRepository.save(entity);
+			} else {
+				log.error(methodName + "findByEmployeeId returned====>" + findByEmployeeId);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error(methodName + e.getMessage());
+		}
+		return entity;
+
 	}
 
 }

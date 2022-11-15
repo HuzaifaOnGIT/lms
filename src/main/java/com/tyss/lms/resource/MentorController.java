@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tyss.lms.constants.AdminConstant;
+import com.tyss.lms.dto.EmployeeStatus;
 import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
 import com.tyss.lms.dto.ResponseMessage;
@@ -40,7 +43,7 @@ public class MentorController {
 		}
 	}
 
-	@PostMapping("/batch/view")
+	@GetMapping("/batch/view")
 	public ResponseEntity<ResponseMessage> viewBatch() {
 
 		List<BatchDetails> addBatch = mockService.viewBatch();
@@ -67,4 +70,16 @@ public class MentorController {
 		}
 	}
 
+	@PostMapping("/employee/changestatus/{employeeId},{status}")
+	public ResponseEntity<ResponseMessage> changeStatus(@PathVariable String employeeId, @PathVariable EmployeeStatus status) {
+
+		MockDetails addMock = mockService.changeStatus( employeeId, status);
+		if (addMock != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, addMock);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, addMock);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
 }
