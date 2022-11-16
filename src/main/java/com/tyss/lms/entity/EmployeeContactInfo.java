@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class EmployeeContactInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int employeeContactInfoId;
+	private long employeeContactInfoId;
 	private String contactType;
 	private long contactNo;
 }

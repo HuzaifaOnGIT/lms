@@ -2,6 +2,7 @@ package com.tyss.lms.resource;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MentorController {
 
+	@Autowired
 	private MentorService mockService;
 
 	@PostMapping("/mock/add")
@@ -80,6 +82,19 @@ public class MentorController {
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
 			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, addMock);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/employee/search/{employeeId}")
+	public ResponseEntity<ResponseMessage> searchEmployee(@PathVariable String employeeId) {
+
+		EmployeeEntity employee = mockService.searchEmployee(employeeId);
+		if (employee != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS, employee);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.SEARCH_FAIL, employee);
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}

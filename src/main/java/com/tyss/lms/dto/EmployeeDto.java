@@ -28,7 +28,7 @@ public class EmployeeDto {
 	private EmployeeSecondaryInfo employeeSecondaryInfo;
 	private List<EmployeeEducationInfo> educationInfos;
 	private List<EmployeeAddressInfo> addressInfos;
-	private EmployeeBankDetail bankDetails;
+	private EmployeeBankDetail bankDetail;
 	private List<EmployeeTechnicalSkillsInfo> employeeTechnicalSkillsInfo;
 	private List<EmployeeExperienceInfo> employeeExperienceInfos;
 	private List<EmployeeContactInfo> contactInfos;

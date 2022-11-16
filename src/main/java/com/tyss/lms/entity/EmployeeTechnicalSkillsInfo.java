@@ -22,7 +22,7 @@ public class EmployeeTechnicalSkillsInfo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int employeeTechnicalSkillsInfoId;
+	private long employeeTechnicalSkillsInfoId;
 	private String skillType;
 	private float skillRating ;
 	private float experience;

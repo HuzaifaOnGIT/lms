@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class EmployeeExperienceInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int employeeExperienceInfoId;
+	private long employeeExperienceInfoId;
 	private String companyName;
 	private float experience;
 	private String dateOfJoining;

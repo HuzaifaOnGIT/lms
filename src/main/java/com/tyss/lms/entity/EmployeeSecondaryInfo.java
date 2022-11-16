@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "employee_secondary_Info")
 public class EmployeeSecondaryInfo {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int employeeSecondaryInfoId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long employeeSecondaryInfoId;
 	private String panNo;
 	private String aadharNo;
 	private String fatherName;

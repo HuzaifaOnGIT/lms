@@ -21,7 +21,7 @@ public class EmployeeEducationInfo {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int employeeEducationInfoId;
+	private long employeeEducationInfoId;
 	private String educationType;
 	private Integer yearOfPassing;
 	private float percentage;

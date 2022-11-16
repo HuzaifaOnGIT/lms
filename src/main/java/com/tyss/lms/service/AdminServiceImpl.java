@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tyss.lms.dto.BatchDto;
@@ -24,10 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AdminServiceImpl implements AdminService {
 
+	@Autowired
 	private BatchRepository batchRepository;
 
+	@Autowired
 	private MentorDetailRepository mentorRepository;
 
+	@Autowired
 	private EmployeeRepository employeeRepository;
 
 	@Override

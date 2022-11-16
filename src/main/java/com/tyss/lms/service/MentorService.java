@@ -20,4 +20,6 @@ public interface MentorService {
 
 	public 	EmployeeEntity changeStatus(String employeeId, EmployeeStatus status);
 
+	public EmployeeEntity searchEmployee(String employeeId);
+
 }

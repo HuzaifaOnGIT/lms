@@ -22,7 +22,7 @@ public class EmployeeBankDetail {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int employeeBankDetailId;
+	private long employeeBankDetailId;
 	private long accountNo;
 	private String bankName;
 	private AccountType accountType ;

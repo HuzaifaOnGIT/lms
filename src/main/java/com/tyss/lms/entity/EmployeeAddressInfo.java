@@ -20,10 +20,9 @@ import lombok.NoArgsConstructor;
 public class EmployeeAddressInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int employeeAddressInfoId;
+	private long employeeAddressInfoId;
 	private String AddressType;
 	private Integer doorNo;
-	private float percentage;
 	private String street;
 	private String locality;
 	private String city;

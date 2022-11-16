@@ -1,9 +1,9 @@
 package com.tyss.lms.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tyss.lms.dto.EmployeeDto;
@@ -16,8 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService{
 
+	@Autowired
 	private EmployeeRepository employeeRepository;
 
 	@Override
@@ -31,7 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			BeanUtils.copyProperties(employeeDto, entity);
 			Optional<EmployeeEntity> findByEmployeeId = employeeRepository.findByEmployeeId(entity.getEmployeeId());
 			
-			if (findByEmployeeId.isEmpty()) {
+			if (findByEmployeeId.isPresent()) {
 				log.error(methodName, "EmployeeId already exists", entity);
 				throw new RuntimeException("EmployeeId already exists");
 			}
@@ -43,9 +44,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			log.error(methodName + e.getMessage());
+			throw e;
 		}
 		return entity;
 	}
@@ -64,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				findById.get().setEmployeeSecondaryInfo(employeeDto.getEmployeeSecondaryInfo());
 				findById.get().setEmployeeTechnicalSkillsInfo(employeeDto.getEmployeeTechnicalSkillsInfo());
 				findById.get().setAddressInfos(employeeDto.getAddressInfos());
-				findById.get().setBankDetail(employeeDto.getBankDetails());
+				findById.get().setBankDetail(employeeDto.getBankDetail());
 				findById.get().setEmployeeExperienceInfos(employeeDto.getEmployeeExperienceInfos());
 				findById.get().setEducationInfos(employeeDto.getEducationInfos());
 				findById.get().setContactInfos(employeeDto.getContactInfos());

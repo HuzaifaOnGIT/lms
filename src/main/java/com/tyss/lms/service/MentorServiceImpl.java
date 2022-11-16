@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tyss.lms.dto.EmployeeStatus;
@@ -26,12 +27,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MentorServiceImpl implements MentorService {
 
+	@Autowired
 	private MockRepository mockRepository;
 
+	@Autowired
 	private BatchRepository batchRepository;
 
+	@Autowired
 	private MockRatingRepository mockRatingRepository;
 
+	@Autowired
 	private EmployeeRepository employeeRepository;
 
 	@Override
@@ -126,6 +131,27 @@ public class MentorServiceImpl implements MentorService {
 		}
 		return entity;
 
+	}
+
+	@Override
+	public EmployeeEntity searchEmployee(String employeeId) {
+		String methodName = "searchEmployee";
+		EmployeeEntity employee = null;
+		try {
+
+			Optional<EmployeeEntity> findByEmployeeId = employeeRepository.findByEmployeeId(employeeId);
+			if (findByEmployeeId == null) {
+				log.info(methodName, " Null value received ", findByEmployeeId);
+				throw new RuntimeException("employee not found");
+
+			}
+			employee=findByEmployeeId.get();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error(methodName + e.getMessage());
+		}
+		return employee;
 	}
 
 }
