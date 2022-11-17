@@ -9,11 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.tyss.lms.dto.ApprovalStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,8 +24,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "Employee_temp")
-public class EmployeeEntity implements Serializable {
+@Table(name = "Employee")
+public class Employee implements Serializable {
 
 	/**
 	 * 
@@ -72,8 +71,8 @@ public class EmployeeEntity implements Serializable {
 	@JoinColumn(name = "Id")
 	private List<EmployeeContactInfo> contactInfos;
 	
-	private ApprovalStatus status;
-	
-
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "BatchDetails_id")
+	private BatchDetails batchDetails;
 
 }

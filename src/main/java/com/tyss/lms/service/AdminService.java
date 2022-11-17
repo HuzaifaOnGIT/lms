@@ -2,10 +2,14 @@ package com.tyss.lms.service;
 
 import java.util.List;
 
+import com.tyss.lms.dto.ApproveRejectDto;
 import com.tyss.lms.dto.BatchDto;
 import com.tyss.lms.dto.GlobalSearchDTO;
 import com.tyss.lms.dto.MentorDto;
+import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.entity.BatchDetails;
+import com.tyss.lms.entity.Employee;
+import com.tyss.lms.entity.EmployeeEntity;
 import com.tyss.lms.entity.MentorDetails;
 
 public interface AdminService {
@@ -26,6 +30,12 @@ public interface AdminService {
 
 	public MentorDetails addMentor(MentorDto mentorDto);
 
-	public GlobalSearchDTO globalSearch(String parameter);
+	public GlobalSearchDTO globalSearch(String parameter,PagingAndFilter filter);
+
+	public List<EmployeeEntity> approvalRequests();
+
+	public Employee approveEmployee(ApproveRejectDto approveDto);
+
+	public EmployeeEntity rejectEmployee(ApproveRejectDto rejectDto);
 
 }

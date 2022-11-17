@@ -17,8 +17,9 @@ import com.tyss.lms.dto.EmployeeStatus;
 import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
 import com.tyss.lms.dto.ResponseMessage;
+import com.tyss.lms.dto.StatsDTO;
 import com.tyss.lms.entity.BatchDetails;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.Employee;
 import com.tyss.lms.entity.MockDetails;
 import com.tyss.lms.entity.MockRatings;
 import com.tyss.lms.service.MentorService;
@@ -27,16 +28,24 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/mentor")
+/**
+ *-	Gender (Pie-chart)
+-	Year of Passing (Column Chart)
+-	Experience (Column Chart)
+-	Degree (Bar Graph)
+-	Batch Performance(Pie-chart)
+
+ */
 @RequiredArgsConstructor
 public class MentorController {
 
 	@Autowired
-	private MentorService mockService;
+	private MentorService mentorService;
 
 	@PostMapping("/mock/add")
 	public ResponseEntity<ResponseMessage> addBatch(@RequestBody MockDetailDto mockDto) {
 
-		MockDetails addMock = mockService.addMock(mockDto);
+		MockDetails addMock = mentorService.addMock(mockDto);
 		if (addMock != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, addMock);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -49,7 +58,7 @@ public class MentorController {
 	@GetMapping("/batch/view")
 	public ResponseEntity<ResponseMessage> viewBatch() {
 
-		List<BatchDetails> addBatch = mockService.viewBatch();
+		List<BatchDetails> addBatch = mentorService.viewBatch();
 		if (addBatch != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, addBatch);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -63,7 +72,7 @@ public class MentorController {
 	@PostMapping("/mock/rate")
 	public ResponseEntity<ResponseMessage> rateMock(@RequestBody MockRatingDto mockRatingDto) {
 
-		MockRatings mockRating = mockService.rateMock(mockRatingDto);
+		MockRatings mockRating = mentorService.rateMock(mockRatingDto);
 		if (mockRating != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, mockRating);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -76,12 +85,12 @@ public class MentorController {
 	@PostMapping("/employee/changestatus/{employeeId},{status}")
 	public ResponseEntity<ResponseMessage> changeStatus(@PathVariable String employeeId, @PathVariable EmployeeStatus status) {
 
-		  EmployeeEntity addMock = mockService.changeStatus( employeeId, status);
-		if (addMock != null) {
-			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, addMock);
+		  Employee changeStatus= mentorService.changeStatus( employeeId, status);
+		if (changeStatus != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, changeStatus);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
-			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, addMock);
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, changeStatus);
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
@@ -89,7 +98,7 @@ public class MentorController {
 	@GetMapping("/employee/search/{employeeId}")
 	public ResponseEntity<ResponseMessage> searchEmployee(@PathVariable String employeeId) {
 
-		EmployeeEntity employee = mockService.searchEmployee(employeeId);
+		Employee employee = mentorService.searchEmployee(employeeId);
 		if (employee != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS, employee);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -98,4 +107,66 @@ public class MentorController {
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
+	@GetMapping("/dashboard/gender")
+	public ResponseEntity<ResponseMessage> genderStats(@PathVariable long batchId) {
+
+		StatsDTO result = mentorService.genderStats(batchId);
+		if (result != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().genderDetail(result.getGenderDetail()).build());
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, result);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	@GetMapping("/dashboard/yop")
+	public ResponseEntity<ResponseMessage> yopStats(@PathVariable long batchId) {
+
+		StatsDTO result = mentorService.yopStats(batchId);
+		if (result != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().yopDetail(result.getYopDetail()).build());
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, result);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/dashboard/degree")
+	public ResponseEntity<ResponseMessage> degreeStats(@PathVariable long batchId) {
+
+		StatsDTO result = mentorService.degreeStats(batchId);
+		if (result != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().yopDetail(result.getYopDetail()).build());
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, result);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	@GetMapping("/dashboard/experience")
+	public ResponseEntity<ResponseMessage> experienceStats(@PathVariable long batchId) {
+
+		StatsDTO result = mentorService.experienceStats(batchId);
+		if (result != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().yopDetail(result.getYopDetail()).build());
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, result);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	@GetMapping("/dashboard/performance")
+	public ResponseEntity<ResponseMessage> batchPerformance(@PathVariable long batchId) {
+
+		StatsDTO result = mentorService.batchPerformance(batchId);
+		if (result != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().yopDetail(result.getYopDetail()).build());
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, result);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+
 }

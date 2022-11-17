@@ -15,11 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tyss.lms.constants.AdminConstant;
+import com.tyss.lms.dto.ApproveRejectDto;
 import com.tyss.lms.dto.BatchDto;
 import com.tyss.lms.dto.GlobalSearchDTO;
 import com.tyss.lms.dto.MentorDto;
+import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.dto.ResponseMessage;
 import com.tyss.lms.entity.BatchDetails;
+import com.tyss.lms.entity.Employee;
+import com.tyss.lms.entity.EmployeeEntity;
 import com.tyss.lms.entity.MentorDetails;
 import com.tyss.lms.service.AdminService;
 
@@ -131,17 +135,18 @@ public class AdminController {
 					searchResult);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
-			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.SEARCH_FAIL, searchResult);
+			ResponseMessage responseMessage = new ResponseMessage(true , AdminConstant.SEARCH_FAIL, searchResult);
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
 	
-	@GetMapping("/search/{parameter}")
-	public ResponseEntity<ResponseMessage> globalSearch(@PathVariable String parameter) {
+	@PostMapping("/search/")
+//	@PostMapping("/search/{parameter}")
+	public ResponseEntity<ResponseMessage> globalSearch( @RequestBody String parameter ,PagingAndFilter filter) {
 
 		GlobalSearchDTO searchResult=null;
 		try {
-			 searchResult= adminService.globalSearch(parameter);
+			 searchResult= adminService.globalSearch(parameter, filter);
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -155,4 +160,43 @@ public class AdminController {
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
+	@GetMapping("/employee/approval/requests")
+	public ResponseEntity<ResponseMessage> approvalRequests() {
+
+		List<EmployeeEntity> requests = adminService.approvalRequests();
+		if (requests != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, requests);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, requests);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@PostMapping("/employee/approve")
+	public ResponseEntity<ResponseMessage> approveEmployee(@RequestBody ApproveRejectDto approveDto) {
+
+		Employee employee = adminService.approveEmployee(approveDto);
+		if (employee != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, employee);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, employee);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@PostMapping("/employee/reject")
+	public ResponseEntity<ResponseMessage> rejectEmployee(@RequestBody ApproveRejectDto rejectDto) {
+
+		EmployeeEntity employee = adminService.rejectEmployee(rejectDto);
+		if (employee != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.REJECT_SUCCESS, employee);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.REJECT_FAIL, employee);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	
 }

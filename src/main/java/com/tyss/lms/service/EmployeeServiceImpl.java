@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.tyss.lms.dto.EmployeeDto;
 import com.tyss.lms.entity.EmployeeEntity;
-import com.tyss.lms.repository.EmployeeRepository;
+import com.tyss.lms.repository.EmployeeTempRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeServiceImpl implements EmployeeService{
 
 	@Autowired
-	private EmployeeRepository employeeRepository;
+	private EmployeeTempRepository employeeRepository;
 
 	@Override
 	public EmployeeEntity addEmployee(EmployeeDto employeeDto) {
