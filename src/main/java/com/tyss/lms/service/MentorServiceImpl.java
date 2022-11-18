@@ -18,7 +18,7 @@ import com.tyss.lms.dto.MockRatingDto;
 import com.tyss.lms.dto.StatsDTO;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 import com.tyss.lms.entity.MockDetails;
 import com.tyss.lms.entity.MockRatings;
 import com.tyss.lms.repository.BatchRepository;
@@ -164,17 +164,16 @@ public class MentorServiceImpl implements MentorService {
 	@Override
 	public StatsDTO genderStats(long batchId) {
 		String methodName = "genderStats";
-		List<EmployeeEntity> employees = null;
+		List<EmployeeTemp> employees = null;
 		StatsDTO genderStatsDTO = new StatsDTO();
 		try {
 
-			Optional<BatchDetails> findById = batchRepository.findById(batchId);
-			if (findById.isEmpty()) {
-				log.info(methodName, " Null value received ", findById);
+			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
+			if (findByBatchId.isEmpty()) {
+				log.info(methodName, " Null value received ", findByBatchId);
 				throw new LMSCustomException("employee not found");
 			}
-			BatchDetails batchDetails = findById.get();
-			List<Employee> employeeList = batchDetails.getEmployee();
+			List<Employee> employeeList = findByBatchId.get();
 
 //			findAllByStudent_Grades_ClassName(final String className);
 
@@ -201,17 +200,16 @@ public class MentorServiceImpl implements MentorService {
 	@Override
 	public StatsDTO yopStats(long batchId) {
 		String methodName = "genderStats";
-		List<EmployeeEntity> employees = null;
+		List<EmployeeTemp> employees = null;
 		StatsDTO genderStatsDTO = new StatsDTO();
 		try {
 
-			Optional<BatchDetails> findById = batchRepository.findById(batchId);
-			if (findById.isEmpty()) {
-				log.info(methodName, " Null value received ", findById);
+			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
+			if (findByBatchId.isEmpty()) {
+				log.info(methodName, " Null value received ", findByBatchId);
 				throw new LMSCustomException("employee not found");
 			}
-			BatchDetails batchDetails = findById.get();
-			List<Employee> employeeList = batchDetails.getEmployee();
+			List<Employee> employeeList = findByBatchId.get();
 
 //			findAllByStudent_Grades_ClassName(final String className);
 
@@ -239,17 +237,16 @@ public class MentorServiceImpl implements MentorService {
 	@Override
 	public StatsDTO batchPerformance(long batchId) {
 		String methodName = "genderStats";
-		List<EmployeeEntity> employees = null;
+		List<EmployeeTemp> employees = null;
 		StatsDTO genderStatsDTO = new StatsDTO();
 		try {
 
-			Optional<BatchDetails> findById = batchRepository.findById(batchId);
-			if (findById.isEmpty()) {
-				log.info(methodName, " Null value received ", findById);
+			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
+			if (findByBatchId.isEmpty()) {
+				log.info(methodName, " Null value received ", findByBatchId);
 				throw new LMSCustomException("employee not found");
 			}
-			BatchDetails batchDetails = findById.get();
-			List<Employee> employeeList = batchDetails.getEmployee();
+			List<Employee> employeeList = findByBatchId.get();
 
 //			findAllByStudent_Grades_ClassName(final String className);
 
@@ -277,7 +274,7 @@ public class MentorServiceImpl implements MentorService {
 	@Override
 	public StatsDTO experienceStats(long batchId) {
 		String methodName = "genderStats";
-		List<EmployeeEntity> employees = null;
+		List<EmployeeTemp> employees = null;
 		StatsDTO experienceDetail = new StatsDTO();
 //		try {
 
@@ -315,17 +312,16 @@ public class MentorServiceImpl implements MentorService {
 	@Override
 	public StatsDTO degreeStats(long batchId) {
 		String methodName = "genderStats";
-		List<EmployeeEntity> employees = null;
+		List<EmployeeTemp> employees = null;
 		StatsDTO genderStatsDTO = new StatsDTO();
 		try {
 
-			Optional<BatchDetails> findById = batchRepository.findById(batchId);
-			if (findById.isEmpty()) {
-				log.info(methodName, " Null value received ", findById);
+			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
+			if (findByBatchId.isEmpty()) {
+				log.info(methodName, " Null value received ", findByBatchId);
 				throw new LMSCustomException("employee not found");
 			}
-			BatchDetails batchDetails = findById.get();
-			List<Employee> employeeList = batchDetails.getEmployee();
+			List<Employee> employeeList = findByBatchId.get();
 
 //			findAllByStudent_Grades_ClassName(final String className);
 

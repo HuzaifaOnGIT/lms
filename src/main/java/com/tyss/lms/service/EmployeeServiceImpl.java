@@ -6,8 +6,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tyss.lms.dto.ApprovalStatus;
 import com.tyss.lms.dto.EmployeeDto;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 import com.tyss.lms.repository.EmployeeTempRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,25 +23,26 @@ public class EmployeeServiceImpl implements EmployeeService{
 	private EmployeeTempRepository employeeRepository;
 
 	@Override
-	public EmployeeEntity addEmployee(EmployeeDto employeeDto) {
+	public EmployeeTemp addEmployee(EmployeeDto employeeDto) {
 		String methodName = "addEmployee";
-		EmployeeEntity entity = null;
+		EmployeeTemp entity = null;
 
 		try {
 
-			entity = new EmployeeEntity();
+			entity = new EmployeeTemp();
 			BeanUtils.copyProperties(employeeDto, entity);
-			Optional<EmployeeEntity> findByEmployeeId = employeeRepository.findByEmployeeId(entity.getEmployeeId());
+			Optional<EmployeeTemp> findByEmployeeId = employeeRepository.findByEmployeeId(entity.getEmployeeId());
 			
 			if (findByEmployeeId.isPresent()) {
 				log.error(methodName, "EmployeeId already exists", entity);
 				throw new RuntimeException("EmployeeId already exists");
 			}
 
+			entity.setStatus(ApprovalStatus.approval_pending);
 			entity = employeeRepository.save(entity);
 			if (entity == null) {
 				log.info(methodName, " Null value received ", entity);
-				throw new RuntimeException("Resume not saved");
+				throw new RuntimeException("Employee not saved");
 
 			}
 
@@ -54,11 +56,11 @@ public class EmployeeServiceImpl implements EmployeeService{
 	}
 
 	@Override
-	public EmployeeEntity updateEmployee(EmployeeDto employeeDto) {
+	public EmployeeTemp updateEmployee(EmployeeDto employeeDto) {
 		String methodName = "updateEmployeee";
-		EmployeeEntity save = null;
+		EmployeeTemp save = null;
 
-		Optional<EmployeeEntity> findById = employeeRepository.findByEmployeeId(employeeDto.getEmployeeId());
+		Optional<EmployeeTemp> findById = employeeRepository.findByEmployeeId(employeeDto.getEmployeeId());
 		try {
 			if (!findById.isPresent()) {
 				throw new RuntimeException("Employee Not Found Select Correct Employee ID");

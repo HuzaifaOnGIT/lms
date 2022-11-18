@@ -8,7 +8,7 @@ import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 import com.tyss.lms.entity.MockDetails;
 import com.tyss.lms.entity.MockRatings;
 

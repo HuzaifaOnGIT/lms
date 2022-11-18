@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class BatchDto {
 
-	private Long batchId;
+	private Long Id;
 	private String batchName;
 	private String mentorName;
 	private List<String> technologies;

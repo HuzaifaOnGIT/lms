@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tyss.lms.constants.EmployeeConstant;
 import com.tyss.lms.dto.EmployeeDto;
 import com.tyss.lms.dto.ResponseMessage;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 import com.tyss.lms.service.EmployeeService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class EmployeeController {
 	@PostMapping("/add")
 	public ResponseEntity<ResponseMessage> addResume(@RequestBody EmployeeDto employeeDto) {
 
-		EmployeeEntity addResume=null;
+		EmployeeTemp addResume=null;
 		try {
 			addResume = employeeService.addEmployee(employeeDto);
 		} catch (RuntimeException e) {
@@ -46,7 +46,7 @@ public class EmployeeController {
 	@PostMapping("/update")
 	public ResponseEntity<ResponseMessage> updateResume(@RequestBody EmployeeDto employeeDto) {
 
-		EmployeeEntity updateResume = employeeService.updateEmployee(employeeDto);
+		EmployeeTemp updateResume = employeeService.updateEmployee(employeeDto);
 		if (updateResume != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, EmployeeConstant.EMPLOYEE_UPDATE_SUCCESS, updateResume);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);

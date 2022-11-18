@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 public class BatchDetails {
 
 	@Id
-	private Long Id;
+	private Long id;
 	private String batchName;
 	private String mentorName;
 	@Convert(converter = ListToStringUtil.class)
@@ -34,8 +34,8 @@ public class BatchDetails {
 	private String startDate;
 	private String endDate;
 	private Status status;
-	@OneToMany(
-	 mappedBy = "batchDetails", cascade =CascadeType.ALL,
-     orphanRemoval = true)
-	private List<Employee> employee;
+//	@OneToMany(
+//	 mappedBy = "batchDetails", cascade =CascadeType.ALL,
+//     orphanRemoval = true)
+//	private List<Employee> employee;
 }

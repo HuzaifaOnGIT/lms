@@ -1,13 +1,13 @@
 package com.tyss.lms.service;
 
 import com.tyss.lms.dto.EmployeeDto;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 
 public interface EmployeeService {
 
-	public EmployeeEntity addEmployee(EmployeeDto employeeDto);
+	public EmployeeTemp addEmployee(EmployeeDto employeeDto);
 
-	public EmployeeEntity updateEmployee(EmployeeDto employeeDto);
+	public EmployeeTemp updateEmployee(EmployeeDto employeeDto);
 
 	
 }

@@ -13,7 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.mysql.cj.result.Row;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 
 public class EmployeeExcelExporter {
 //	  private List < EmployeeEntity > employeeList;

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.tyss.lms.customexception.LMSCustomException;
@@ -21,7 +20,7 @@ import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.dto.SortingOrder;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 import com.tyss.lms.entity.MentorDetails;
 import com.tyss.lms.repository.BatchRepository;
 import com.tyss.lms.repository.EmployeeRepository;
@@ -43,12 +42,12 @@ public class AdminServiceImpl implements AdminService {
 	private MentorDetailRepository mentorRepository;
 
 	@Autowired
-	private EmployeeTempRepository employeeRepository;
+	private EmployeeTempRepository employeeTempRepo;
 
 	@Autowired
 	private EmployeeRepository employeeRepo;
 
-	private Page<EmployeeEntity> findAll;
+	private Page<EmployeeTemp> findAll;
 
 	@Override
 	public BatchDetails addBatch(BatchDto batchDto) {
@@ -84,11 +83,12 @@ public class AdminServiceImpl implements AdminService {
 		String methodName = "updateBatch";
 		BatchDetails save = null;
 
-		Optional<BatchDetails> findById = batchRepository.findById(batchDto.getBatchId());
+		Optional<BatchDetails> findById = batchRepository.findById(batchDto.getId());
 		try {
 			if (!findById.isPresent()) {
 				throw new RuntimeException("Batch Not Found Select Correct BatchID");
 			} else {
+
 				findById.get().setBatchName(batchDto.getBatchName());
 				findById.get().setEndDate(batchDto.getEndDate());
 				findById.get().setMentorName(batchDto.getMentorName());
@@ -109,7 +109,7 @@ public class AdminServiceImpl implements AdminService {
 		String methodName = "searchBatch";
 		BatchDetails search = null;
 		try {
-			search = batchRepository.findByBatchIdOrBatchName(batchId, batchName);
+			search = batchRepository.findByIdOrBatchName(batchId, batchName);
 			if (search == null) {
 				throw new RuntimeException("Batch Not Found");
 			}
@@ -160,19 +160,30 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<MentorDetails> searchMentor(String employeeId, String mentorName) {
+	public List<MentorDetails> searchMentor(PagingAndFilter filter) {
 		String methodName = "searchMentor";
 		List<MentorDetails> search = null;
+		Pageable paging = null;
 		try {
-			search = mentorRepository.findAllByEmployeeIdOrMentorName(employeeId, mentorName);
+			if (filter.getSortingOrder() == SortingOrder.descending)
+				paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+//						,Sort.by(filter.getSortBy()).descending());
+			else
+				paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+//						,Sort.by(filter.getSortBy()).ascending());
+//			search = mentorRepository.findAllByEmployeeIdOrMentorName(employeeId, mentorName);
+			search = mentorRepository.findAllByEmployeeIdOrMentorNameOrEmailIdContainingIgnoreCase(
+					filter.getParameter(), filter.getParameter(), filter.getParameter(), paging);
 			if (search == null) {
-				throw new RuntimeException("Mentor Not Found");
+				log.error(methodName + "search returned ======>" + search);
+
 			}
 		} catch (Exception e) {
 			log.error(methodName + "==========>" + e.getMessage());
 			e.printStackTrace();
 			;
 		}
+		log.info(methodName + "returned=============>" + search);
 		return search;
 	}
 
@@ -216,39 +227,17 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public GlobalSearchDTO globalSearch(String parameter, PagingAndFilter filter) {
+	public GlobalSearchDTO globalSearch(PagingAndFilter filter) {
 		String methodName = "globalSearch";
 		GlobalSearchDTO searchResult = new GlobalSearchDTO();
 		Pageable paging = null;
 		try {
 			if (filter.getSortingOrder() == SortingOrder.descending)
-				paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
-						Sort.by(filter.getSortBy()).descending());
+				paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+//						,Sort.by(filter.getSortBy()).descending());
 			else
-				paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
-						Sort.by(filter.getSortBy()).ascending());
-//			List<EmployeeEntity> findAllByEmployeeId =
-			Page<Employee> findAll = employeeRepo.findAll(paging);
-			List<Employee> findAllByEmployeeId = findAll.getContent();
-
-			findAllByEmployeeId.forEach(e -> {
-				if (e.getEmployeePrimaryInfo().getEmployeeName().equalsIgnoreCase(parameter)) {
-					searchResult.getEmployees().add(e);
-				}
-			});
-
-			if (searchResult.getEmployees().size() == 0) {
-				findAllByEmployeeId.forEach(e -> {
-					if (e.getEmployeeId().equalsIgnoreCase(parameter)) {
-						searchResult.getEmployees().add(e);
-					}
-				});
-
-				List<MentorDetails> findAllByEmployeeIdOrMentorName = mentorRepository
-						.findAllByEmployeeIdOrMentorName(parameter, parameter);
-				if (findAllByEmployeeIdOrMentorName != null) {
-					searchResult.setMentors(findAllByEmployeeIdOrMentorName);
-				}
+				paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+/
 			}
 		} catch (Exception e) {
 			log.error(methodName + "==========>" + e.getMessage());
@@ -257,14 +246,70 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return searchResult;
 	}
+//	@Override
+//	public GlobalSearchDTO globalSearch(PagingAndFilter filter) {
+//		String methodName = "globalSearch";
+//		GlobalSearchDTO searchResult = new GlobalSearchDTO();
+//		Pageable paging = null;
+//		try {
+//			if (filter.getSortingOrder() == SortingOrder.descending)
+//				paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+////						,Sort.by(filter.getSortBy()).descending());
+//			else
+//				paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+////						,Sort.by(filter.getSortBy()).ascending());
+//			
+////			String parameter = filter.getParameter();
+////			Optional<List<Employee>> findAllEmployee = employeeRepo.findAllByBatchIdOrEmployeeIdOrBatchNameContainingIgnoreCase(filter.getBatchId(),parameter,parameter, paging);
+////			
+////			log.info(methodName +"findAllEmployee returned ============>"+ findAllEmployee.get());
+////			if(findAllEmployee.isPresent()) {
+////				searchResult.setEmployees(findAllEmployee.get());
+////			}
+//			
+//			List<Employee> findAllByEmployeeId = employeeRepo.findAll();
+//			log.info(methodName + "employeeRepo.findAll();==========> returned" + findAllByEmployeeId);
+//			Page<Employee> findAll = employeeRepo.findAll(paging);
+//			log.info(methodName + "employeeRepo.findAll(paging);==========> returned" + findAll);
+////			List<Employee> findAllByEmployeeId = findAll.getContent();
+//			
+//			findAll.getContent().forEach(e -> {
+//				if (e.getEmployeePrimaryInfo().getEmployeeName().equalsIgnoreCase(filter.getParameter())) {
+//					searchResult.getEmployees().add(e);
+//				}
+//			});
+//			
+//			if (searchResult.getEmployees().size() == 0) {
+//				findAllByEmployeeId.forEach(e -> {
+//					if (e.getEmployeeId().equalsIgnoreCase(filter.getParameter())) {
+//						searchResult.getEmployees().add(e);
+//					}
+//				});
+//				
+////				List<MentorDetails> findAllByEmployeeIdOrMentorName = mentorRepository
+////						.findAllByEmployeeIdOrMentorName(parameter, parameter);
+//				List<MentorDetails> searchMentor = searchMentor(filter);
+//				
+//				if (searchMentor != null) {
+//					searchResult.builder().mentors(searchMentor).build();
+//					
+//				}
+//			}
+//		} catch (Exception e) {
+//			log.error(methodName + "==========>" + e.getMessage());
+//			e.printStackTrace();
+//			;
+//		}
+//		return searchResult;
+//	}
 
 	@Override
-	public List<EmployeeEntity> approvalRequests() {
+	public List<EmployeeTemp> approvalRequests() {
 		String methodName = "approvalRequests";
-		List<EmployeeEntity> requests = null;
+		List<EmployeeTemp> requests = null;
 		try {
-			requests = employeeRepository.findAll();
-			if (requests == null) {
+			requests = employeeTempRepo.findAll();
+			if (requests == null || requests.size() == 0) {
 				log.error(methodName + "No Employee Found");
 				throw new LMSCustomException("Employee Not Found");
 			}
@@ -280,9 +325,9 @@ public class AdminServiceImpl implements AdminService {
 	public Employee approveEmployee(ApproveRejectDto approveDto) {
 		String methodName = "approveEmployee";
 		Employee employee = null;
-		EmployeeEntity employeeEntity = null;
+		EmployeeTemp employeeEntity = null;
 		try {
-			Optional<EmployeeEntity> findByEmployeeId = employeeRepository.findByEmployeeId(approveDto.getEmployeeId());
+			Optional<EmployeeTemp> findByEmployeeId = employeeTempRepo.findByEmployeeId(approveDto.getEmployeeId());
 			if (findByEmployeeId.isEmpty()) {
 				log.error(methodName + "findByEmployeeId returned Null");
 				throw new LMSCustomException("Employee Not Found");
@@ -298,8 +343,13 @@ public class AdminServiceImpl implements AdminService {
 			employee = new Employee();
 			BeanUtils.copyProperties(employeeEntity, employee);
 
-			employee.setBatchDetails(batchDetails);
+			employee.setBatchId(approveDto.getBatchId());
+			employee.setBatchName(approveDto.getBatchName());
 			employee = employeeRepo.save(employee);
+			if (employee != null && employee.getEmployeeId() != null) {
+
+				employeeTempRepo.delete(employeeEntity);
+			}
 
 		} catch (Exception e) {
 			log.error(methodName + "==========>" + e.getMessage());
@@ -310,14 +360,14 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public EmployeeEntity rejectEmployee(ApproveRejectDto rejectDto) {
+	public EmployeeTemp rejectEmployee(ApproveRejectDto rejectDto) {
 		String methodName = "rejectEmployee";
-		EmployeeEntity entity = null;
+		EmployeeTemp entity = null;
 		try {
 
-			entity = new EmployeeEntity();
+			entity = new EmployeeTemp();
 
-			Optional<EmployeeEntity> findByEmployeeId = employeeRepository.findByEmployeeId(rejectDto.getEmployeeId());
+			Optional<EmployeeTemp> findByEmployeeId = employeeTempRepo.findByEmployeeId(rejectDto.getEmployeeId());
 			if (findByEmployeeId.isEmpty()) {
 				log.info(methodName, "findByEmployeeId ==========> Null value received ", entity);
 				throw new LMSCustomException("Employee not found");
@@ -325,7 +375,7 @@ public class AdminServiceImpl implements AdminService {
 			}
 			entity = findByEmployeeId.get();
 			entity.setStatus(ApprovalStatus.rejected);
-			entity = employeeRepository.save(entity);
+			entity = employeeTempRepo.save(entity);
 
 		} catch (Exception e) {
 			e.printStackTrace();

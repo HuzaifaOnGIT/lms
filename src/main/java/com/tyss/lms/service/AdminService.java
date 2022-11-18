@@ -9,7 +9,7 @@ import com.tyss.lms.dto.MentorDto;
 import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 import com.tyss.lms.entity.MentorDetails;
 
 public interface AdminService {
@@ -24,18 +24,20 @@ public interface AdminService {
 
 	public MentorDetails updateMentor(MentorDto mentorDto);
 
-	public List<MentorDetails> searchMentor(String employeeId, String mentorName);
+//	public List<MentorDetails> searchMentor(String employeeId, String mentorName);
 
 	public void deleteMentor(String id);
 
 	public MentorDetails addMentor(MentorDto mentorDto);
 
-	public GlobalSearchDTO globalSearch(String parameter,PagingAndFilter filter);
+	public GlobalSearchDTO globalSearch(PagingAndFilter filter);
 
-	public List<EmployeeEntity> approvalRequests();
+	public List<EmployeeTemp> approvalRequests();
 
 	public Employee approveEmployee(ApproveRejectDto approveDto);
 
-	public EmployeeEntity rejectEmployee(ApproveRejectDto rejectDto);
+	public EmployeeTemp rejectEmployee(ApproveRejectDto rejectDto);
+
+	public List<MentorDetails> searchMentor(PagingAndFilter filter);
 
 }

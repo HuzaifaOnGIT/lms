@@ -2,9 +2,12 @@ package com.tyss.lms.resource;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +26,7 @@ import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.dto.ResponseMessage;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
-import com.tyss.lms.entity.EmployeeEntity;
+import com.tyss.lms.entity.EmployeeTemp;
 import com.tyss.lms.entity.MentorDetails;
 import com.tyss.lms.service.AdminService;
 
@@ -38,6 +41,7 @@ public class AdminController {
 	private AdminService adminService;
 
 	@PostMapping("/batch/add")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> addBatch(@RequestBody BatchDto batchDto) {
 
 		BatchDetails addBatch = adminService.addBatch(batchDto);
@@ -51,6 +55,7 @@ public class AdminController {
 	}
 
 	@PutMapping("/batch/update")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> updateBatch(@RequestBody BatchDto batchDto) {
 
 		BatchDetails updateBatch = adminService.updateBatch(batchDto);
@@ -64,7 +69,8 @@ public class AdminController {
 		}
 	}
 
-	@DeleteMapping("/batch/delete")
+	@DeleteMapping("/batch/delete/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> deleteBatch(@PathVariable Long id) {
 
 		adminService.deleteBatch(id);
@@ -73,6 +79,7 @@ public class AdminController {
 	}
 
 	@GetMapping("/batch/search/{batchId},{batchName}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> searchBatch(@PathVariable Long batchId, @PathVariable String batchName) {
 
 		BatchDetails searchResult = adminService.searchBatch(batchId, batchName);
@@ -86,6 +93,7 @@ public class AdminController {
 		}
 	}
 	@PostMapping("/mentor/add")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> addMentor(@RequestBody MentorDto mentorDto) {
 
 		MentorDetails addMentor = adminService.addMentor(mentorDto);
@@ -99,6 +107,7 @@ public class AdminController {
 	}
 
 	@PutMapping ("/mentor/update")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> updateMentor(@RequestBody MentorDto mentorDto) {
 
 		MentorDetails updateMentor = adminService.updateMentor(mentorDto);
@@ -113,6 +122,7 @@ public class AdminController {
 	}
 
 	@DeleteMapping("/mentor/delete/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> deleteMentor(@PathVariable String id) {
 
 		adminService.deleteMentor(id);
@@ -120,12 +130,13 @@ public class AdminController {
 				HttpStatus.OK);
 	}
 
-	@GetMapping("/mentor/search/{employeeId},{mentorName}")
-	public ResponseEntity<ResponseMessage> searchMentor(@PathVariable String employeeId, @PathVariable String mentorName) {
+	@PostMapping("/mentor/search/")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ResponseMessage> searchMentor(@RequestBody PagingAndFilter filter) {
 
 		List<MentorDetails> searchResult=null;
 		try {
-			searchResult = adminService.searchMentor(employeeId, mentorName);
+			searchResult = adminService.searchMentor(filter);
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -142,11 +153,11 @@ public class AdminController {
 	
 	@PostMapping("/search/")
 //	@PostMapping("/search/{parameter}")
-	public ResponseEntity<ResponseMessage> globalSearch( @RequestBody String parameter ,PagingAndFilter filter) {
+	public ResponseEntity<ResponseMessage> globalSearch( @RequestBody PagingAndFilter filter) {
 
 		GlobalSearchDTO searchResult=null;
 		try {
-			 searchResult= adminService.globalSearch(parameter, filter);
+			 searchResult= adminService.globalSearch( filter);
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -160,36 +171,39 @@ public class AdminController {
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
-	@GetMapping("/employee/approval/requests")
+	@GetMapping("/employee/approval-requests")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> approvalRequests() {
 
-		List<EmployeeEntity> requests = adminService.approvalRequests();
+		List<EmployeeTemp> requests = adminService.approvalRequests();
 		if (requests != null) {
-			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, requests);
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.FETCH_SUCCESS, requests);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
-			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, requests);
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.SEARCH_FAIL, requests);
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@PostMapping("/employee/approve")
-	public ResponseEntity<ResponseMessage> approveEmployee(@RequestBody ApproveRejectDto approveDto) {
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ResponseMessage> approveEmployee(@Valid  @RequestBody ApproveRejectDto approveDto) {
 
 		Employee employee = adminService.approveEmployee(approveDto);
 		if (employee != null) {
-			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, employee);
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.APPROVE_SUCCESS, employee);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
-			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, employee);
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.APPROVE_FAIL, employee);
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@PostMapping("/employee/reject")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> rejectEmployee(@RequestBody ApproveRejectDto rejectDto) {
 
-		EmployeeEntity employee = adminService.rejectEmployee(rejectDto);
+		EmployeeTemp employee = adminService.rejectEmployee(rejectDto);
 		if (employee != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.REJECT_SUCCESS, employee);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);

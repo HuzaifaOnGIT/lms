@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "Employee_temp")
-public class EmployeeEntity implements Serializable {
+public class EmployeeTemp implements Serializable {
 
 	/**
 	 * 
