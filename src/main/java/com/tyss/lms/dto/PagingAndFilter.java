@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PagingAndFilter {
-	private long batchId;
+	private long id;
 	private String parameter;
 	private int pageNumber;
 	private int pageSize;

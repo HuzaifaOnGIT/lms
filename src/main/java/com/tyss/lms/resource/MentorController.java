@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +44,7 @@ public class MentorController {
 	private MentorService mentorService;
 
 	@PostMapping("/mock/add")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> addBatch(@RequestBody MockDetailDto mockDto) {
 
 		MockDetails addMock = mentorService.addMock(mockDto);
@@ -56,6 +58,7 @@ public class MentorController {
 	}
 
 	@GetMapping("/batch/view")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> viewBatch() {
 
 		List<BatchDetails> addBatch = mentorService.viewBatch();
@@ -70,6 +73,7 @@ public class MentorController {
 	
 
 	@PostMapping("/mock/rate")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> rateMock(@RequestBody MockRatingDto mockRatingDto) {
 
 		MockRatings mockRating = mentorService.rateMock(mockRatingDto);
@@ -83,6 +87,7 @@ public class MentorController {
 	}
 
 	@PostMapping("/employee/changestatus/{employeeId},{status}")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> changeStatus(@PathVariable String employeeId, @PathVariable EmployeeStatus status) {
 
 		  Employee changeStatus= mentorService.changeStatus( employeeId, status);
@@ -96,6 +101,7 @@ public class MentorController {
 	}
 	
 	@GetMapping("/employee/search/{employeeId}")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> searchEmployee(@PathVariable String employeeId) {
 
 		Employee employee = mentorService.searchEmployee(employeeId);
@@ -108,6 +114,7 @@ public class MentorController {
 		}
 	}
 	@GetMapping("/dashboard/gender")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> genderStats(@PathVariable long batchId) {
 
 		StatsDTO result = mentorService.genderStats(batchId);
@@ -120,6 +127,7 @@ public class MentorController {
 		}
 	}
 	@GetMapping("/dashboard/yop")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> yopStats(@PathVariable long batchId) {
 
 		StatsDTO result = mentorService.yopStats(batchId);
@@ -133,6 +141,7 @@ public class MentorController {
 	}
 	
 	@GetMapping("/dashboard/degree")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> degreeStats(@PathVariable long batchId) {
 
 		StatsDTO result = mentorService.degreeStats(batchId);
@@ -145,6 +154,7 @@ public class MentorController {
 		}
 	}
 	@GetMapping("/dashboard/experience")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> experienceStats(@PathVariable long batchId) {
 
 		StatsDTO result = mentorService.experienceStats(batchId);
@@ -157,6 +167,7 @@ public class MentorController {
 		}
 	}
 	@GetMapping("/dashboard/performance")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> batchPerformance(@PathVariable long batchId) {
 
 		StatsDTO result = mentorService.batchPerformance(batchId);

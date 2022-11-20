@@ -21,6 +21,10 @@ public interface MentorDetailRepository extends JpaRepository<MentorDetails, Lon
 //	public List<MentorDetails> findAllByEmployeeIdOrMentorNameOrEmailIdOrSkillsContainingIgnoreCase(String parameter,String parameter2,String parameter3, Pageable filter);
 
 
+	public List<MentorDetails> findAllByEmployeeIdContainingIgnoreCaseOrMentorNameContainingIgnoreCaseOrEmailIdContainingIgnoreCase(
+			String parameter, String parameter2, String parameter3, Pageable paging);
+
+
 
 
 }

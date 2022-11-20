@@ -3,6 +3,7 @@ package com.tyss.lms.resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus; 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class EmployeeController {
 	private EmployeeService employeeService;
 	
 	@PostMapping("/add")
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	public ResponseEntity<ResponseMessage> addResume(@RequestBody EmployeeDto employeeDto) {
 
 		EmployeeTemp addResume=null;
@@ -44,6 +46,7 @@ public class EmployeeController {
 	}
 	
 	@PostMapping("/update")
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	public ResponseEntity<ResponseMessage> updateResume(@RequestBody EmployeeDto employeeDto) {
 
 		EmployeeTemp updateResume = employeeService.updateEmployee(employeeDto);

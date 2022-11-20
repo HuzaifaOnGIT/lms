@@ -20,7 +20,7 @@ public interface AdminService {
 
 	public void deleteBatch(Long id);
 
-	public BatchDetails searchBatch(Long id, String batchName);
+	public List<BatchDetails> searchBatch(PagingAndFilter filter);
 
 	public MentorDetails updateMentor(MentorDto mentorDto);
 

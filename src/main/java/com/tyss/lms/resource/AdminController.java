@@ -78,11 +78,11 @@ public class AdminController {
 				HttpStatus.OK);
 	}
 
-	@GetMapping("/batch/search/{batchId},{batchName}")
+	@PostMapping("/batch/search")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> searchBatch(@PathVariable Long batchId, @PathVariable String batchName) {
+	public ResponseEntity<ResponseMessage> searchBatch(PagingAndFilter filter) {
 
-		BatchDetails searchResult = adminService.searchBatch(batchId, batchName);
+	 List<BatchDetails> searchResult = adminService.searchBatch(filter);
 		if (searchResult != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS,
 					searchResult);
@@ -130,17 +130,14 @@ public class AdminController {
 				HttpStatus.OK);
 	}
 
-	@PostMapping("/mentor/search/")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping("/mentor/search")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ResponseMessage> searchMentor(@RequestBody PagingAndFilter filter) {
 
 		List<MentorDetails> searchResult=null;
-		try {
+		
 			searchResult = adminService.searchMentor(filter);
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
+
 		if (searchResult != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS,
 					searchResult);
@@ -151,8 +148,9 @@ public class AdminController {
 		}
 	}
 	
-	@PostMapping("/search/")
+	@PostMapping("/search")
 //	@PostMapping("/search/{parameter}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> globalSearch( @RequestBody PagingAndFilter filter) {
 
 		GlobalSearchDTO searchResult=null;

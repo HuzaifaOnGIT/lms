@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -34,8 +35,8 @@ public class BatchDetails {
 	private String startDate;
 	private String endDate;
 	private Status status;
-//	@OneToMany(
-//	 mappedBy = "batchDetails", cascade =CascadeType.ALL,
-//     orphanRemoval = true)
-//	private List<Employee> employee;
+	@OneToMany(
+	 mappedBy = "batchDetails", cascade =CascadeType.ALL,fetch = FetchType.LAZY,
+     orphanRemoval = true)
+	private List<Employee> employee;
 }

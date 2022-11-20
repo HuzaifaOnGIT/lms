@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -80,9 +81,9 @@ public class Employee implements Serializable {
 	@NotNull
 	@NotBlank
 	private String batchName;
-//	@ManyToOne(cascade = CascadeType.ALL)
-//	@JoinColumn(name = "BatchDetails_id")
-//	private BatchDetails batchDetails;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "BatchDetails_id")
+	private BatchDetails batchDetails;
 	
 	
 
