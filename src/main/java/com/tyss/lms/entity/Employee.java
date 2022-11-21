@@ -81,7 +81,7 @@ public class Employee implements Serializable {
 	@NotNull
 	@NotBlank
 	private String batchName;
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "BatchDetails_id")
 	private BatchDetails batchDetails;
 	

@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "batch_details")
-public class BatchDetails implements Serializable {
+public class BatchDetails {
 
 	@Id
 	private Long id;

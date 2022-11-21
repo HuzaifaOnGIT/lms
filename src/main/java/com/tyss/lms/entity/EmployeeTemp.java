@@ -49,7 +49,6 @@ public class EmployeeTemp implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "Id")
-	
 	private List<EmployeeEducationInfo> educationInfos;
 	
 	@OneToMany(cascade = CascadeType.ALL)
