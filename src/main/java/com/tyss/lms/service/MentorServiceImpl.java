@@ -8,6 +8,9 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.tyss.lms.customexception.LMSCustomException;
@@ -15,6 +18,7 @@ import com.tyss.lms.dto.EmployeeStatus;
 import com.tyss.lms.dto.Gender;
 import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
+import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.dto.StatsDTO;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
@@ -25,6 +29,7 @@ import com.tyss.lms.repository.BatchRepository;
 import com.tyss.lms.repository.EmployeeRepository;
 import com.tyss.lms.repository.MockRatingRepository;
 import com.tyss.lms.repository.MockRepository;
+import com.tyss.lms.security.jwt.AuthTokenFilter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +50,9 @@ public class MentorServiceImpl implements MentorService {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
+	
+	@Autowired
+	AuthTokenFilter userDetailService;
 
 	@Override
 	public MockDetails addMock(MockDetailDto mockDto) {
@@ -141,22 +149,28 @@ public class MentorServiceImpl implements MentorService {
 	}
 
 	@Override
-	public Employee searchEmployee(String employeeId) {
+	public Employee searchEmployee(PagingAndFilter filter) {
 		String methodName = "searchEmployee";
 		Employee employee = null;
+		Pageable paging=null;
 		try {
-
-			Optional<Employee> findByEmployeeId = employeeRepository.findByEmployeeId(employeeId);
-			if (findByEmployeeId == null) {
+			paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+			Page<Employee> findByEmployeeId = employeeRepository.findByEmployeeIdContainingIgnoreCase(filter.getParameter(),paging);
+			List<Employee> list = findByEmployeeId.toList();
+			if (list!=null) {
 				log.info(methodName, " Null value received ", findByEmployeeId);
-				throw new RuntimeException("employee not found");
+				throw new LMSCustomException("employee not found");
 
 			}
-			employee = findByEmployeeId.get();
+//			employee = findByEmployeeId.get();
 
-		} catch (Exception e) {
+		}catch(LMSCustomException e) {
+			throw e;
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			log.error(methodName + e.getMessage());
+			throw e;
 		}
 		return employee;
 	}

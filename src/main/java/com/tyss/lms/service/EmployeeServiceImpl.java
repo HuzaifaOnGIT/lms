@@ -31,6 +31,8 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 			entity = new EmployeeTemp();
 			BeanUtils.copyProperties(employeeDto, entity);
+			log.info(methodName +"employeeDto==>"+employeeDto);
+			log.info(methodName +"entity     ==>"+employeeDto);
 			Optional<EmployeeTemp> findByEmployeeId = employeeRepository.findByEmployeeId(entity.getEmployeeId());
 			
 			if (findByEmployeeId.isPresent()) {
@@ -78,6 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 			}
 		} catch (RuntimeException e) {
 			log.error(methodName + e.getMessage());
+			throw e;
 		}
 		return save;
 	}

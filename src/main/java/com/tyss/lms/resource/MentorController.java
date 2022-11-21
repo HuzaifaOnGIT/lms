@@ -17,6 +17,7 @@ import com.tyss.lms.constants.AdminConstant;
 import com.tyss.lms.dto.EmployeeStatus;
 import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
+import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.dto.ResponseMessage;
 import com.tyss.lms.dto.StatsDTO;
 import com.tyss.lms.entity.BatchDetails;
@@ -100,11 +101,11 @@ public class MentorController {
 		}
 	}
 	
-	@GetMapping("/employee/search/{employeeId}")
+	@PostMapping("/employee/search")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
-	public ResponseEntity<ResponseMessage> searchEmployee(@PathVariable String employeeId) {
+	public ResponseEntity<ResponseMessage> searchEmployee(PagingAndFilter filter) {
 
-		Employee employee = mentorService.searchEmployee(employeeId);
+		Employee employee = mentorService.searchEmployee(filter);
 		if (employee != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS, employee);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);

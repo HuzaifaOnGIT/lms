@@ -57,7 +57,7 @@ public class EmployeeTemp implements Serializable {
 	private List<EmployeeAddressInfo> addressInfos;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@JoinColumn(name = "bank_Id")
 	private EmployeeBankDetail bankDetail;
 	
 	@OneToMany(cascade = CascadeType.ALL)

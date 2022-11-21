@@ -153,13 +153,8 @@ public class AdminController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseMessage> globalSearch( @RequestBody PagingAndFilter filter) {
 
-		GlobalSearchDTO searchResult=null;
-		try {
-			 searchResult= adminService.globalSearch( filter);
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
+		GlobalSearchDTO searchResult= adminService.globalSearch( filter);
+		
 		if (searchResult != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS,
 					searchResult);

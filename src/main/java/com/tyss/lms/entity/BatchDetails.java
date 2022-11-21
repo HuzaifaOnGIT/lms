@@ -1,5 +1,6 @@
 package com.tyss.lms.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "batch_details")
-public class BatchDetails {
+public class BatchDetails implements Serializable {
 
 	@Id
 	private Long id;
@@ -35,8 +36,8 @@ public class BatchDetails {
 	private String startDate;
 	private String endDate;
 	private Status status;
-	@OneToMany(
-	 mappedBy = "batchDetails", cascade =CascadeType.ALL,fetch = FetchType.LAZY,
-     orphanRemoval = true)
-	private List<Employee> employee;
+//	@OneToMany(
+//	 mappedBy = "batchDetails", cascade =CascadeType.ALL,fetch = FetchType.LAZY,
+//     orphanRemoval = true)
+//	private List<Employee> employee;
 }

@@ -30,12 +30,10 @@ public class EmployeeController {
 	public ResponseEntity<ResponseMessage> addResume(@RequestBody EmployeeDto employeeDto) {
 
 		EmployeeTemp addResume=null;
-		try {
+		
 			addResume = employeeService.addEmployee(employeeDto);
-		} catch (RuntimeException e) {
-			ResponseMessage responseMessage = new ResponseMessage(true,EmployeeConstant.EMPLOYEE_ADD_FAIL+e.getMessage(), addResume);
-			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
-		}
+		
+		
 		if (addResume != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, EmployeeConstant.EMPLOYEE_ADD_SUCCESS, addResume);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);

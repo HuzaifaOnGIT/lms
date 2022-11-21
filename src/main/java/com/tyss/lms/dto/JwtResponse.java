@@ -2,6 +2,9 @@ package com.tyss.lms.dto;
 
 import java.util.List;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class JwtResponse {
   private String token;
   private String type = "Bearer";

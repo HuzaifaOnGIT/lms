@@ -6,6 +6,7 @@ import com.tyss.lms.dto.EmployeeStatus;
 import com.tyss.lms.dto.StatsDTO;
 import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
+import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
 import com.tyss.lms.entity.EmployeeTemp;
@@ -22,7 +23,7 @@ public interface MentorService {
 
 	public 	Employee changeStatus(String employeeId, EmployeeStatus status);
 
-	public Employee searchEmployee(String employeeId);
+	public Employee searchEmployee(PagingAndFilter employeeId);
 
 	public StatsDTO genderStats(long batchId);
 

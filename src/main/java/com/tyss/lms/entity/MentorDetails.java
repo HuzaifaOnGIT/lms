@@ -1,5 +1,6 @@
 package com.tyss.lms.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Convert;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "mentor_details")
-public class MentorDetails {
+public class MentorDetails implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long mentorDetailsId;
