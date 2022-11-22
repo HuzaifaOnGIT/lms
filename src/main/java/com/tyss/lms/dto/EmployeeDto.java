@@ -24,6 +24,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EmployeeDto {
 	private String employeeId;
+
+	private int yop;
+	private String highestDegree;
+	private long totalExperience;
 	private EmployeePrimaryInfo employeePrimaryInfo;
 	private EmployeeSecondaryInfo employeeSecondaryInfo;
 	private List<EmployeeEducationInfo> educationInfos;

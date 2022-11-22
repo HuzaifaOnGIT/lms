@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 public class StatsDTO {
 	private List< Map<Gender, Float> >genderDetail;
 	private Map<Integer, Integer> yopDetail;
-	private Map<Integer, Integer> experienceDetail;
-	private Map<Integer, Integer> educationDetail;
+	private Map<Long,Integer> experienceDetail;
+	private Map<String,Integer> degreeStats;
 	private Map<String,Integer> performance;
 //	List<Map<String,Integer> > performance;
 //	private  Map<String, List<MockRatings>> performance;

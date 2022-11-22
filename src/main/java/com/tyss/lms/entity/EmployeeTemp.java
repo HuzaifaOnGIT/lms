@@ -39,35 +39,35 @@ public class EmployeeTemp implements Serializable {
 	
 	private String employeeId;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "Id")
 	private EmployeePrimaryInfo employeePrimaryInfo;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "Id")
 	private EmployeeSecondaryInfo employeeSecondaryInfo;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "Id")
 	private List<EmployeeEducationInfo> educationInfos;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "Id")
 	private List<EmployeeAddressInfo> addressInfos;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "bank_Id")
 	private EmployeeBankDetail bankDetail;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.PERSIST) 
 	@JoinColumn(name = "Id")
 	private List<EmployeeTechnicalSkillsInfo> employeeTechnicalSkillsInfo;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "Id")
 	private List<EmployeeExperienceInfo> employeeExperienceInfos;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "Id")
 	private List<EmployeeContactInfo> contactInfos;
 	

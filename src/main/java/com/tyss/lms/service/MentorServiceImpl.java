@@ -208,7 +208,6 @@ public class MentorServiceImpl implements MentorService {
 		String methodName = "genderStats";
 		List<EmployeeTemp> employees = null;
 		StatsDTO genderStatsDTO = new StatsDTO();
-		float count = 0;
 		List<Map<Gender, Float>> genderDetail = new ArrayList<>();
 		try {
 
@@ -219,7 +218,6 @@ public class MentorServiceImpl implements MentorService {
 			}
 			List<Employee> employeeList = findByBatchId.get();
 
-//			findAllByStudent_Grades_ClassName(final String className);
 
 			HashMap<Gender, Float> result = new HashMap<>();
 			HashMap<Gender, Employee> result1 = new HashMap<>();
@@ -257,54 +255,38 @@ public class MentorServiceImpl implements MentorService {
 
 	@Override
 	public StatsDTO yopStats(long batchId) {
-		String methodName = "yopStats";
-		List<EmployeeTemp> employees = null;
+		String methodName = "batchPerformance";
+//		Map<String, List<MockRatings>> result = null;
 		StatsDTO yopStatsDTO = new StatsDTO();
+//		List<Map<String,Integer> >res=new ArrayList<>();
+		Map<Integer,Integer> sres=new HashMap<>();
 		try {
 
 			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
-
-			log.info(methodName + "findByBatchId=====>" + findByBatchId.get());
 			if (findByBatchId.isEmpty()) {
 				log.info(methodName, " Null value received ", findByBatchId);
-				throw new LMSCustomException("employee not found");
+				throw new LMSCustomException("No Records Found");
 			}
-			List<Employee> employeeList = findByBatchId.get();
+ 			List<Employee> employees = findByBatchId.get();
+			log.info(methodName + employees.toString());
+			log.info(methodName + "=======>" + employees.size());
 
 //			findAllByStudent_Grades_ClassName(final String className);
 
-			HashMap<Integer, Integer> result = new HashMap<>();
-			HashMap<Integer, ArrayList<Integer>> resultMap = new HashMap<>();
-			Map<Integer, List<Employee>> resultMap1 = new HashMap<>();
-			for (int i = 0; i < employeeList.size(); i++) {
-				Employee employee = employeeList.get(i);
-				List<Employee> employeeSubList = resultMap1.getOrDefault(
-						employee.getEducationInfos().get(0).getYearOfPassing(), new ArrayList<Employee>());
-				employeeSubList.add(employee);
-				resultMap1.put(employee.getEducationInfos().get(0).getYearOfPassing(), employeeSubList);
-				log.info(methodName + "====>" + resultMap1.toString());
-				result.put(employee.getEducationInfos().get(0).getYearOfPassing(), employeeSubList.size());
-				log.info(methodName + "====>" + result.toString());
-			}
 
-//			<Integer,ArrayList<Date>>
-//
-//			1. set filter=DAY/MONTH/YEAR
-//
-//			2.Iterate the date_obj
-//
-//			3.Use Calendar package to get a variable val=Calendar.get(filter)
-//
-//			4. If hashmap.keyset().contains(val)
-//			      hashmap.get(val).add(date_obj.date)
-//			   Else
-//			      hashmap.put(val,new ArrayList<date_obj>());
+//			Map<String, List<MockRatings>> collect = 
+					Map<Integer, List<Employee>> collect = employees.stream()
+					.collect(Collectors.groupingBy(Employee::getYop));
 
-			yopStatsDTO.setYopDetail(result);
+			collect.forEach((k,v)->{
+				sres.put(k, v.size());
+//				res.add(sres)		;	
+				});
+
+			yopStatsDTO.setYopDetail(sres);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error(methodName + e.getMessage());
-			throw e;
 		}
 
 		return yopStatsDTO;
@@ -351,79 +333,79 @@ public class MentorServiceImpl implements MentorService {
 
 	@Override
 	public StatsDTO experienceStats(long batchId) {
-		String methodName = "genderStats";
-		List<EmployeeTemp> employees = null;
-		StatsDTO experienceDetail = new StatsDTO();
-//		try {
+		
+			String methodName = "experienceStats";
+			StatsDTO expStatsDTO = new StatsDTO();
+//			List<Map<String,Integer> >res=new ArrayList<>();
+			Map<Long,Integer> sres=new HashMap<>();
+			try {
 
-//			Optional<BatchDetails> findById = batchRepository.findById(batchId);
-//			if (findById.isEmpty()) {
-//				log.info(methodName, " Null value received ", findById);
-//				throw new LMSCustomException("employee not found");
-//			}
-//			BatchDetails batchDetails = findById.get();
-//			List<Employee> employeeList = batchDetails.getEmployee();
-//
-////			findAllByStudent_Grades_ClassName(final String className);
-//
-//			HashMap<Integer, Integer> result = new HashMap<>();
-//			Map<Integer, List<Employee>> resultMap = new HashMap<>();
-//			for (int i = 0; i < employeeList.size(); i++) {
-//				Employee employee = employeeList.get(i);
-//				List<Employee> employeeSubList = resultMap.getOrDefault(employee.getEmployeeExperienceInfos
-//						new ArrayList<Employee>());
-//				employeeSubList.add(employee);
-//				 resultMap.put(employee.getEducationInfos().get(employee.getEmployeeExperienceInfos(), employeeSubList);
-//				result.put(employee.getEducationInfos().get(employee.getEducationInfos().size()).getYearOfPassing(),
-//						employeeSubList.size());
-//			}
-//
-//			genderStatsDTO.setYopDetail(result);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			log.error(methodName + e.getMessage());
-//		}
+				Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
+				if (findByBatchId.isEmpty()) {
+					log.info(methodName, " Null value received ", findByBatchId);
+					throw new LMSCustomException("No Records Found");
+				}
+	 			List<Employee> employees = findByBatchId.get();
+				log.info(methodName + employees.toString());
+				log.info(methodName + "=======>" + employees.size());
 
-		return null;
-	}
+//				findAllByStudent_Grades_ClassName(final String className);
+
+
+//				Map<String, List<MockRatings>> collect = 
+						Map<Long, List<Employee>> collect = employees.stream()
+						.collect(Collectors.groupingBy(Employee::getTotalExperience));
+
+				collect.forEach((k,v)->{
+					sres.put(k, v.size());
+//					res.add(sres)		;	
+					});
+
+				expStatsDTO.setExperienceDetail(sres);
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.error(methodName + e.getMessage());
+			}
+
+			return expStatsDTO;
+		}
 
 	@Override
 	public StatsDTO degreeStats(long batchId) {
-		String methodName = "genderStats";
-		List<EmployeeTemp> employees = null;
-		StatsDTO genderStatsDTO = new StatsDTO();
+		String methodName = "experienceStats";
+		StatsDTO degreeStatsDTO = new StatsDTO();
+//		List<Map<String,Integer> >res=new ArrayList<>();
+		Map<String,Integer> sres=new HashMap<>();
 		try {
 
 			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
 			if (findByBatchId.isEmpty()) {
 				log.info(methodName, " Null value received ", findByBatchId);
-				throw new LMSCustomException("employee not found");
+				throw new LMSCustomException("No Records Found");
 			}
-			List<Employee> employeeList = findByBatchId.get();
+ 			List<Employee> employees = findByBatchId.get();
+			log.info(methodName + employees.toString());
+			log.info(methodName + "=======>" + employees.size());
 
 //			findAllByStudent_Grades_ClassName(final String className);
 
-			HashMap<Integer, Integer> result = new HashMap<>();
-			Map<Integer, List<Employee>> resultMap = new HashMap<>();
-			for (int i = 0; i < employeeList.size(); i++) {
-				Employee employee = employeeList.get(i);
-				List<Employee> employeeSubList = resultMap.getOrDefault(employee.getEmployeePrimaryInfo().getGender(),
-						new ArrayList<Employee>());
-				employeeSubList.add(employee);
-				resultMap.put(employee.getEducationInfos().get(employee.getEducationInfos().size()).getYearOfPassing(),
-						employeeSubList);
-				result.put(employee.getEducationInfos().get(employee.getEducationInfos().size()).getYearOfPassing(),
-						employeeSubList.size());
-			}
 
-			genderStatsDTO.setYopDetail(result);
+//			Map<String, List<MockRatings>> collect = 
+					Map<String, List<Employee>> collect = employees.stream()
+					.collect(Collectors.groupingBy(Employee::getHighestDegree));
+
+			collect.forEach((k,v)->{
+				sres.put(k, v.size());
+//				res.add(sres)		;	
+				});
+
+			degreeStatsDTO.setDegreeStats(sres);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error(methodName + e.getMessage());
 		}
 
-		return genderStatsDTO;
-	}
+		return degreeStatsDTO;	}
 
 	@Override
 	public AttendanceEntity addAttendance(AttendanceDto attendanceDto) {

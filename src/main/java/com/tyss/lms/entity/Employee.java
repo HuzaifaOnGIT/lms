@@ -40,6 +40,12 @@ public class Employee implements Serializable {
 	private long Id;
 	
 	private String employeeId;
+
+	private int yop;
+	
+	private String highestDegree;
+	
+	private long totalExperience;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "Id")
@@ -77,6 +83,7 @@ public class Employee implements Serializable {
 	@NotNull
 	@NotBlank
 	private long batchId;
+	
 	
 	@NotNull
 	@NotBlank
