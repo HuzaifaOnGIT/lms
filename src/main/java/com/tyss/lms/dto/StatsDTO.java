@@ -1,6 +1,9 @@
 package com.tyss.lms.dto;
 
+import java.util.List;
 import java.util.Map;
+
+import com.tyss.lms.entity.MockRatings;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,11 +15,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StatsDTO {
-	private Map<Gender, Float> genderDetail;
+	private List< Map<Gender, Float> >genderDetail;
 	private Map<Integer, Integer> yopDetail;
 	private Map<Integer, Integer> experienceDetail;
 	private Map<Integer, Integer> educationDetail;
-	private Map<Integer, Integer> performanceDetail;
+	private Map<String,Integer> performance;
+//	List<Map<String,Integer> > performance;
+//	private  Map<String, List<MockRatings>> performance;
 	
 	
 

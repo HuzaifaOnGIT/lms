@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tyss.lms.constants.AdminConstant;
+import com.tyss.lms.dto.AttendanceDto;
 import com.tyss.lms.dto.EmployeeStatus;
 import com.tyss.lms.dto.MockDetailDto;
 import com.tyss.lms.dto.MockRatingDto;
 import com.tyss.lms.dto.PagingAndFilter;
 import com.tyss.lms.dto.ResponseMessage;
 import com.tyss.lms.dto.StatsDTO;
+import com.tyss.lms.entity.AttendanceEntity;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
 import com.tyss.lms.entity.MockDetails;
@@ -114,7 +116,7 @@ public class MentorController {
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
-	@GetMapping("/dashboard/gender")
+	@GetMapping("/dashboard/gender/{batchId}")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> genderStats(@PathVariable long batchId) {
 
@@ -127,7 +129,7 @@ public class MentorController {
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
-	@GetMapping("/dashboard/yop")
+	@GetMapping("/dashboard/yop/{batchId}")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> yopStats(@PathVariable long batchId) {
 
@@ -167,16 +169,43 @@ public class MentorController {
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
-	@GetMapping("/dashboard/performance")
+	@GetMapping("/dashboard/performance/{batchId}")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> batchPerformance(@PathVariable long batchId) {
 
 		StatsDTO result = mentorService.batchPerformance(batchId);
 		if (result != null) {
-			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().yopDetail(result.getYopDetail()).build());
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().performance(result.getPerformance()).build());
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
 			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, result);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	@PostMapping("/attendance")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
+	public ResponseEntity<ResponseMessage> addAttendance(@RequestBody AttendanceDto attendanceDto)  {
+
+		AttendanceEntity attendance = mentorService.addAttendance(attendanceDto);
+		if (attendance != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, attendance);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, attendance);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@PostMapping("/attendance/{empId}")
+	@PreAuthorize("hasRole('ROLE_MENTOR')")
+	public ResponseEntity<ResponseMessage> getAttendance(@PathVariable String empId) {
+
+		List<AttendanceEntity> attendance = mentorService.getAttendance(empId);
+		if (attendance != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, attendance);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, attendance);
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}

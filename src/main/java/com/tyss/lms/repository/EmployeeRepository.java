@@ -24,6 +24,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	public Optional<List<Employee>> findAllByBatchId(long batchId);
 //	public List<Employee> findAllByEmployeeIdContainingIgnoreCase(String parameter, Pageable paging);
 //	public List<Employee> findAllByEmployeeIdContainingIgnoreCaseOrBatchNameContainingIgnoreCase(String parameter,String parameter2, Pageable paging);
+	public Optional<Employee> findByEmployeeIdAndBatchId(String employeeId, long batchId);
 	
 	
 	

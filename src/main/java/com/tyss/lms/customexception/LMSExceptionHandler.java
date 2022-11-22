@@ -1,5 +1,7 @@
 package com.tyss.lms.customexception;
 
+import java.text.ParseException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +29,11 @@ public class LMSExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ResponseMessage> exceptionhandler(Exception exception,WebRequest request) {
+		return new ResponseEntity<ResponseMessage>(new ResponseMessage(true, exception.getMessage(), null),
+				HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	@ExceptionHandler(ParseException.class)
+	public ResponseEntity<ResponseMessage> exceptionhandler(ParseException exception,WebRequest request) {
 		return new ResponseEntity<ResponseMessage>(new ResponseMessage(true, exception.getMessage(), null),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}

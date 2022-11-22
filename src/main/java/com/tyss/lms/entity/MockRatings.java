@@ -1,8 +1,12 @@
 package com.tyss.lms.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.tyss.lms.dto.MockRatingEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,13 +21,16 @@ import lombok.NoArgsConstructor;
 @Table(name = "mock_rating")
 public class MockRatings {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int mockRatingsId;
 	private int mockNo;
-	private Long employeeId;
+	private long batchId;
+	private String employeeId;
 	private String mockType;
 	private String mockTakenBy;
 	private String technology;
-	private String practicalKnowledge;
-	private String theoreticalKnowledge;
+	private MockRatingEnum practicalKnowledge;
+	private MockRatingEnum theoreticalKnowledge;
 	private String overallFeedback;
 	private String detailedFeedback;
 	
