@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.tyss.lms.dto.EmployeeStatus;
@@ -29,6 +30,7 @@ public class EmployeePrimaryInfo {
 	private long employeePrimaryInfoId;
 	@NotBlank(message="EmployeeId Required")
 	@Size(max=15 ,message = "EmployeeId Should be less than 15 characters")
+	@NotNull
 	private String employeeId;
 	@NotBlank(message="EmployeeId Required")
 	@Size(max=25 ,message = "Employee Name Should be less than 25 characters")

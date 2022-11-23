@@ -3,6 +3,8 @@ package com.tyss.lms.repository;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -23,6 +25,8 @@ public interface MentorDetailRepository extends JpaRepository<MentorDetails, Lon
 
 	public List<MentorDetails> findAllByEmployeeIdContainingIgnoreCaseOrMentorNameContainingIgnoreCaseOrEmailIdContainingIgnoreCase(
 			String parameter, String parameter2, String parameter3, Pageable paging);
+
+	public Optional<MentorDetails> findByEmployeeIdOrEmailId(@NotNull String employeeId, String emailId);
 
 
 

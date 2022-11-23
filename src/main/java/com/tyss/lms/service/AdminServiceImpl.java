@@ -3,6 +3,8 @@ package com.tyss.lms.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -204,7 +206,8 @@ public class AdminServiceImpl implements AdminService {
 			if (!findById.isPresent()) {
 				throw new RuntimeException("Mentor Details Not Present On This ID");
 			} else {
-				mentorRepository.deleteByEmployeeId(id);
+				mentorRepository.delete(findById.get());
+//				mentorRepository.deleteByEmployeeId(id);
 			}
 
 		} catch (Exception e) {
@@ -221,6 +224,11 @@ public class AdminServiceImpl implements AdminService {
 			entity = new MentorDetails();
 			BeanUtils.copyProperties(mentorDto, entity);
 
+			Optional<MentorDetails> findByEmployeeIdOrEmailId = mentorRepository.findByEmployeeIdOrEmailId(mentorDto.getEmployeeId(),mentorDto.getEmailId());
+			if(findByEmployeeIdOrEmailId.isPresent()) {
+				throw new RuntimeException("Mentor Already Present");
+			}
+			
 			entity = mentorRepository.save(entity);
 			if (entity == null) {
 				log.info(methodName, "==========> Null value received ", entity);
@@ -312,6 +320,7 @@ public class AdminServiceImpl implements AdminService {
 		EmployeeTemp employeeEntity = null;
 		try {
 			Optional<EmployeeTemp> findByEmployeeId = employeeTempRepo.findByEmployeeId(approveDto.getEmployeeId());
+			log.info(methodName +"findByEmployeeId=temp=="+findByEmployeeId.get() );
 			if (findByEmployeeId.isEmpty()) {
 				log.error(methodName + "findByEmployeeId returned Null");
 				throw new LMSCustomException("Employee Not Found");
@@ -373,6 +382,24 @@ public class AdminServiceImpl implements AdminService {
 			throw e;
 		}
 		return entity;
+	}
+
+	@Override
+	public Employee getEmployee(@Valid String employeeId) {
+		String methodName = "getEmployee";
+		Employee search = null;
+		try {
+			 Optional<Employee> findByEmployeeId = employeeRepo.findByEmployeeId(employeeId);
+			if (findByEmployeeId.isEmpty()) {
+				throw new RuntimeException("Employee Not Found");
+			}
+			search=findByEmployeeId.get();
+		} catch (Exception e) {
+			log.error(methodName + "==========>" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		return search;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,36 +40,45 @@ public class EmployeeTemp implements Serializable {
 	
 	private String employeeId;
 	
-	@OneToOne(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "Id")
+	private int yop;
+	private String highestDegree;
+	private long totalExperience;
+	
+	@OneToOne(cascade = CascadeType.PERSIST )
+	@JoinColumn(name = "primaryinfo_Id")
 	private EmployeePrimaryInfo employeePrimaryInfo;
 	
 	@OneToOne(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "Id")
+	@JoinColumn(name = "secondaryinfo_Id")
 	private EmployeeSecondaryInfo employeeSecondaryInfo;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "Id")
+//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )  
+	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@JoinColumn(name = "education_Id")
 	private List<EmployeeEducationInfo> educationInfos;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "Id")
+//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )  
+	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@JoinColumn(name = "address_Id")
 	private List<EmployeeAddressInfo> addressInfos;
 	
 	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "bank_Id")
 	private EmployeeBankDetail bankDetail;
 	
-	@OneToMany(cascade = CascadeType.PERSIST) 
-	@JoinColumn(name = "Id")
+//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )  
+	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@JoinColumn(name = "technical_Id")
 	private List<EmployeeTechnicalSkillsInfo> employeeTechnicalSkillsInfo;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "Id")
+//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )  
+	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@JoinColumn(name = "experience_Id")
 	private List<EmployeeExperienceInfo> employeeExperienceInfos;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "Id")
+//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} , fetch = FetchType.EAGER)  
+	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@JoinColumn(name = "contact_Id")
 	private List<EmployeeContactInfo> contactInfos;
 	
 	private ApprovalStatus status;

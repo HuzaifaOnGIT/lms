@@ -42,7 +42,7 @@ public class AdminController {
 
 	@PostMapping("/batch/add")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> addBatch(@RequestBody BatchDto batchDto) {
+	public ResponseEntity<ResponseMessage> addBatch(@Valid @RequestBody BatchDto batchDto) {
 
 		BatchDetails addBatch = adminService.addBatch(batchDto);
 		if (addBatch != null) {
@@ -56,7 +56,7 @@ public class AdminController {
 
 	@PutMapping("/batch/update")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> updateBatch(@RequestBody BatchDto batchDto) {
+	public ResponseEntity<ResponseMessage> updateBatch(@Valid  @RequestBody BatchDto batchDto) {
 
 		BatchDetails updateBatch = adminService.updateBatch(batchDto);
 		if (updateBatch != null) {
@@ -80,7 +80,7 @@ public class AdminController {
 
 	@PostMapping("/batch/search")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> searchBatch(PagingAndFilter filter) {
+	public ResponseEntity<ResponseMessage> searchBatch(@Valid  PagingAndFilter filter) {
 
 	 List<BatchDetails> searchResult = adminService.searchBatch(filter);
 		if (searchResult != null) {
@@ -94,7 +94,7 @@ public class AdminController {
 	}
 	@PostMapping("/mentor/add")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> addMentor(@RequestBody MentorDto mentorDto) {
+	public ResponseEntity<ResponseMessage> addMentor(@Valid  @RequestBody MentorDto mentorDto) {
 
 		MentorDetails addMentor = adminService.addMentor(mentorDto);
 		if (addMentor != null) {
@@ -108,7 +108,7 @@ public class AdminController {
 
 	@PutMapping ("/mentor/update")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> updateMentor(@RequestBody MentorDto mentorDto) {
+	public ResponseEntity<ResponseMessage> updateMentor(@Valid  @RequestBody MentorDto mentorDto) {
 
 		MentorDetails updateMentor = adminService.updateMentor(mentorDto);
 		if (updateMentor != null) {
@@ -123,7 +123,7 @@ public class AdminController {
 
 	@DeleteMapping("/mentor/delete/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> deleteMentor(@PathVariable String id) {
+	public ResponseEntity<ResponseMessage> deleteMentor(@Valid  @PathVariable String id) {
 
 		adminService.deleteMentor(id);
 		return new ResponseEntity<ResponseMessage>(new ResponseMessage(false, AdminConstant.DELETE_SUCCESS, null),
@@ -132,7 +132,7 @@ public class AdminController {
 
 	@PostMapping("/mentor/search")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<ResponseMessage> searchMentor(@RequestBody PagingAndFilter filter) {
+	public ResponseEntity<ResponseMessage> searchMentor(@Valid  @RequestBody PagingAndFilter filter) {
 
 		List<MentorDetails> searchResult=null;
 		
@@ -151,7 +151,7 @@ public class AdminController {
 	@PostMapping("/search")
 //	@PostMapping("/search/{parameter}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> globalSearch( @RequestBody PagingAndFilter filter) {
+	public ResponseEntity<ResponseMessage> globalSearch(@Valid  @RequestBody PagingAndFilter filter) {
 
 		GlobalSearchDTO searchResult= adminService.globalSearch(filter);
 		
@@ -194,7 +194,7 @@ public class AdminController {
 	
 	@PostMapping("/employee/reject")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> rejectEmployee(@RequestBody ApproveRejectDto rejectDto) {
+	public ResponseEntity<ResponseMessage> rejectEmployee(@Valid  @RequestBody ApproveRejectDto rejectDto) {
 
 		EmployeeTemp employee = adminService.rejectEmployee(rejectDto);
 		if (employee != null) {
@@ -202,6 +202,23 @@ public class AdminController {
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
 			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.REJECT_FAIL, employee);
+			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+		}
+	}
+	@GetMapping("/employee/get/{employeeId}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<ResponseMessage> getEmployee(@Valid  @PathVariable String employeeId) {
+
+		Employee searchResult=null;
+		
+		searchResult = adminService.getEmployee(employeeId);
+
+		if (searchResult != null) {
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS,
+					searchResult);
+			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+		} else {
+			ResponseMessage responseMessage = new ResponseMessage(true , AdminConstant.SEARCH_FAIL, searchResult);
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}

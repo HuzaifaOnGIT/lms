@@ -2,6 +2,8 @@ package com.tyss.lms.service;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.tyss.lms.dto.ApproveRejectDto;
 import com.tyss.lms.dto.BatchDto;
 import com.tyss.lms.dto.GlobalSearchDTO;
@@ -39,5 +41,7 @@ public interface AdminService {
 	public EmployeeTemp rejectEmployee(ApproveRejectDto rejectDto);
 
 	public List<MentorDetails> searchMentor(PagingAndFilter filter);
+
+	public Employee getEmployee(@Valid String employeeId);
 
 }

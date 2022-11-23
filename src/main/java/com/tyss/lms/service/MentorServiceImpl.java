@@ -399,7 +399,9 @@ public class MentorServiceImpl implements MentorService {
 //				res.add(sres)		;	
 				});
 
+			log.info( "sres==>"+sres);
 			degreeStatsDTO.setDegreeStats(sres);
+			log.info( "degreeStatsDTO==>"+degreeStatsDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error(methodName + e.getMessage());

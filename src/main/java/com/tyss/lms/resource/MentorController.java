@@ -2,6 +2,8 @@ package com.tyss.lms.resource;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +50,7 @@ public class MentorController {
 
 	@PostMapping("/mock/add")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
-	public ResponseEntity<ResponseMessage> addBatch(@RequestBody MockDetailDto mockDto) {
+	public ResponseEntity<ResponseMessage> addBatch(@Valid @RequestBody MockDetailDto mockDto) {
 
 		MockDetails addMock = mentorService.addMock(mockDto);
 		if (addMock != null) {
@@ -77,7 +79,7 @@ public class MentorController {
 
 	@PostMapping("/mock/rate")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
-	public ResponseEntity<ResponseMessage> rateMock(@RequestBody MockRatingDto mockRatingDto) {
+	public ResponseEntity<ResponseMessage> rateMock(@Valid @RequestBody MockRatingDto mockRatingDto) {
 
 		MockRatings mockRating = mentorService.rateMock(mockRatingDto);
 		if (mockRating != null) {
@@ -105,7 +107,7 @@ public class MentorController {
 	
 	@PostMapping("/employee/search")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
-	public ResponseEntity<ResponseMessage> searchEmployee(PagingAndFilter filter) {
+	public ResponseEntity<ResponseMessage> searchEmployee(@Valid PagingAndFilter filter) {
 
 		Employee employee = mentorService.searchEmployee(filter);
 		if (employee != null) {
@@ -143,26 +145,26 @@ public class MentorController {
 		}
 	}
 	
-	@GetMapping("/dashboard/degree")
+	@GetMapping("/dashboard/degree/{batchId}")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> degreeStats(@PathVariable long batchId) {
 
 		StatsDTO result = mentorService.degreeStats(batchId);
 		if (result != null) {
-			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().yopDetail(result.getYopDetail()).build());
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, result);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
 			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, result);
 			return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
 		}
 	}
-	@GetMapping("/dashboard/experience")
+	@GetMapping("/dashboard/experience/{batchId}")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
 	public ResponseEntity<ResponseMessage> experienceStats(@PathVariable long batchId) {
 
 		StatsDTO result = mentorService.experienceStats(batchId);
 		if (result != null) {
-			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS, new StatsDTO().builder().yopDetail(result.getYopDetail()).build());
+			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.ADD_SUCCESS,result);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 		} else {
 			ResponseMessage responseMessage = new ResponseMessage(true, AdminConstant.ADD_FAIL, result);
@@ -184,7 +186,7 @@ public class MentorController {
 	}
 	@PostMapping("/attendance")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
-	public ResponseEntity<ResponseMessage> addAttendance(@RequestBody AttendanceDto attendanceDto)  {
+	public ResponseEntity<ResponseMessage> addAttendance(@Valid @RequestBody AttendanceDto attendanceDto)  {
 
 		AttendanceEntity attendance = mentorService.addAttendance(attendanceDto);
 		if (attendance != null) {

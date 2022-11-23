@@ -1,10 +1,13 @@
 package com.tyss.lms.resource;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus; 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +30,7 @@ public class EmployeeController {
 	
 	@PostMapping("/add")
 	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-	public ResponseEntity<ResponseMessage> addResume(@RequestBody EmployeeDto employeeDto) {
+	public ResponseEntity<ResponseMessage> addResume(@Valid @RequestBody EmployeeDto employeeDto) {
 
 		EmployeeTemp addResume=null;
 		
@@ -43,9 +46,9 @@ public class EmployeeController {
 		}
 	}
 	
-	@PostMapping("/update")
+	@PutMapping("/update")
 	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-	public ResponseEntity<ResponseMessage> updateResume(@RequestBody EmployeeDto employeeDto) {
+	public ResponseEntity<ResponseMessage> updateResume(@Valid @RequestBody EmployeeDto employeeDto) {
 
 		EmployeeTemp updateResume = employeeService.updateEmployee(employeeDto);
 		if (updateResume != null) {

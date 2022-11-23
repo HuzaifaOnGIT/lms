@@ -33,6 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 			BeanUtils.copyProperties(employeeDto, entity);
 			log.info(methodName +"employeeDto==>"+employeeDto);
 			log.info(methodName +"entity     ==>"+employeeDto);
+			entity.setEmployeeId(employeeDto.getEmployeePrimaryInfo().getEmployeeId());
 			Optional<EmployeeTemp> findByEmployeeId = employeeRepository.findByEmployeeId(entity.getEmployeeId());
 			
 			if (findByEmployeeId.isPresent()) {
@@ -41,6 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 			}
 
 			entity.setStatus(ApprovalStatus.approval_pending);
+			
 			entity = employeeRepository.save(entity);
 			if (entity == null) {
 				log.info(methodName, " Null value received ", entity);
@@ -60,28 +62,35 @@ public class EmployeeServiceImpl implements EmployeeService{
 	@Override
 	public EmployeeTemp updateEmployee(EmployeeDto employeeDto) {
 		String methodName = "updateEmployeee";
-		EmployeeTemp save = null;
+		EmployeeTemp entity = null;
 
-		Optional<EmployeeTemp> findById = employeeRepository.findByEmployeeId(employeeDto.getEmployeeId());
+		Optional<EmployeeTemp> findById = employeeRepository.findByEmployeeId(employeeDto.getEmployeePrimaryInfo().getEmployeeId());
 		try {
-			if (!findById.isPresent()) {
+			if (findById.isEmpty()) {
 				throw new RuntimeException("Employee Not Found Select Correct Employee ID");
 			} else {
-				findById.get().setEmployeePrimaryInfo(employeeDto.getEmployeePrimaryInfo());
-				findById.get().setEmployeeSecondaryInfo(employeeDto.getEmployeeSecondaryInfo());
-				findById.get().setEmployeeTechnicalSkillsInfo(employeeDto.getEmployeeTechnicalSkillsInfo());
-				findById.get().setAddressInfos(employeeDto.getAddressInfos());
-				findById.get().setBankDetail(employeeDto.getBankDetail());
-				findById.get().setEmployeeExperienceInfos(employeeDto.getEmployeeExperienceInfos());
-				findById.get().setEducationInfos(employeeDto.getEducationInfos());
-				findById.get().setContactInfos(employeeDto.getContactInfos());
-				save = employeeRepository.save(findById.get());
+			
+				EmployeeTemp employeeTemp = findById.get();
+				
+		
+				log.info(methodName +"employeeDto=======>"+employeeDto);
+				log.info(methodName +"employeeTemp======>"+employeeTemp);
+				employeeTemp.setEmployeePrimaryInfo(employeeDto.getEmployeePrimaryInfo());
+				employeeTemp.setEmployeeSecondaryInfo(employeeDto.getEmployeeSecondaryInfo());
+				employeeTemp.setEmployeeTechnicalSkillsInfo(employeeDto.getEmployeeTechnicalSkillsInfo());
+				employeeTemp.setAddressInfos(employeeDto.getAddressInfos());
+				employeeTemp.setBankDetail(employeeDto.getBankDetail());
+				employeeTemp.setEmployeeExperienceInfos(employeeDto.getEmployeeExperienceInfos());
+				employeeTemp.setEducationInfos(employeeDto.getEducationInfos());
+				employeeTemp.setContactInfos(employeeDto.getContactInfos());
+				employeeTemp.setStatus(ApprovalStatus.approval_pending);
+				entity = employeeRepository.save(employeeTemp);
 
 			}
 		} catch (RuntimeException e) {
 			log.error(methodName + e.getMessage());
 			throw e;
 		}
-		return save;
+		return entity;
 	}
 }
