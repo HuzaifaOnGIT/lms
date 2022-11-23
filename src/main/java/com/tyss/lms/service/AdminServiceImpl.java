@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tyss.lms.customexception.LMSCustomException;
 import com.tyss.lms.dto.ApprovalStatus;
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class AdminServiceImpl implements AdminService {
 
 	@Autowired

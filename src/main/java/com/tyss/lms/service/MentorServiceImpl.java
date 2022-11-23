@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tyss.lms.customexception.LMSCustomException;
 import com.tyss.lms.dto.AttendanceDto;
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class MentorServiceImpl implements MentorService {
 
 	@Autowired
@@ -177,22 +179,25 @@ public class MentorServiceImpl implements MentorService {
 	}
 
 	@Override
-	public Employee searchEmployee(PagingAndFilter filter) {
+	public List<Employee> searchEmployee(PagingAndFilter filter) {
 		String methodName = "searchEmployee";
-		Employee employee = null;
+		List<Employee> employee = null;
 		Pageable paging = null;
 		try {
+			employee=new ArrayList<>();
 			paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+			log.info("filter"+filter);	
+			log.info("paging"+paging);	
 			Page<Employee> findByEmployeeId = employeeRepository
 					.findByEmployeeIdContainingIgnoreCase(filter.getParameter(), paging);
-			List<Employee> list = findByEmployeeId.toList();
-			if (list != null) {
+			employee = findByEmployeeId.toList();
+			log.info(methodName + findByEmployeeId);
+			log.info(methodName + findByEmployeeId.getContent());
+			if (employee == null) {
 				log.info(methodName, " Null value received ", findByEmployeeId);
 				throw new LMSCustomException("employee not found");
 
 			}
-//			employee = findByEmployeeId.get();
-
 		} catch (LMSCustomException e) {
 			throw e;
 		} catch (Exception e) {

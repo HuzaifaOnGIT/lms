@@ -25,7 +25,7 @@ public interface MentorService {
 
 	public 	Employee changeStatus(String employeeId, EmployeeStatus status);
 
-	public Employee searchEmployee(PagingAndFilter employeeId);
+	public List<Employee> searchEmployee(PagingAndFilter employeeId);
 
 	public StatsDTO genderStats(long batchId);
 

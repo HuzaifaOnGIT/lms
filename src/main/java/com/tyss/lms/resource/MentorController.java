@@ -107,9 +107,9 @@ public class MentorController {
 	
 	@PostMapping("/employee/search")
 	@PreAuthorize("hasRole('ROLE_MENTOR')")
-	public ResponseEntity<ResponseMessage> searchEmployee(@Valid PagingAndFilter filter) {
+	public ResponseEntity<ResponseMessage> searchEmployee(@Valid @RequestBody PagingAndFilter filter) {
 
-		Employee employee = mentorService.searchEmployee(filter);
+		List<Employee> employee = mentorService.searchEmployee(filter);
 		if (employee != null) {
 			ResponseMessage responseMessage = new ResponseMessage(false, AdminConstant.SEARCH_SUCCESS, employee);
 			return new ResponseEntity<>(responseMessage, HttpStatus.OK);
