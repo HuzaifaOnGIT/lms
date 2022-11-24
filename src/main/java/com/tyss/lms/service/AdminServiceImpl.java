@@ -387,7 +387,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public Employee getEmployee(@Valid String employeeId) {
+	public Employee getEmployee( String employeeId) {
 		String methodName = "getEmployee";
 		Employee search = null;
 		try {

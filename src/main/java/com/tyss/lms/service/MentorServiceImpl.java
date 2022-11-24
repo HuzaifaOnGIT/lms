@@ -27,11 +27,13 @@ import com.tyss.lms.dto.StatsDTO;
 import com.tyss.lms.entity.AttendanceEntity;
 import com.tyss.lms.entity.BatchDetails;
 import com.tyss.lms.entity.Employee;
+import com.tyss.lms.entity.EmployeeInActive;
 import com.tyss.lms.entity.EmployeeTemp;
 import com.tyss.lms.entity.MockDetails;
 import com.tyss.lms.entity.MockRatings;
 import com.tyss.lms.repository.AttendanceRepo;
 import com.tyss.lms.repository.BatchRepository;
+import com.tyss.lms.repository.EmployeeInActiveRepository;
 import com.tyss.lms.repository.EmployeeRepository;
 import com.tyss.lms.repository.MockRatingRepository;
 import com.tyss.lms.repository.MockRepository;
@@ -60,6 +62,9 @@ public class MentorServiceImpl implements MentorService {
 
 	@Autowired
 	AuthTokenFilter userDetailService;
+	
+	@Autowired
+	private EmployeeInActiveRepository employeeInActiveRepository;
 
 	@Autowired
 	private AttendanceRepo attendanceRepo;
@@ -155,20 +160,63 @@ public class MentorServiceImpl implements MentorService {
 	public Employee changeStatus(String employeeId, EmployeeStatus status) {
 		String methodName = "changeStatus";
 		Employee entity = null;
+		EmployeeInActive inActive=null;
 		try {
 
 			entity = new Employee();
+			switch (status) {
+			case absconded:
+			case terminated:
+				Optional<Employee> findByEmployeeId = employeeRepository.findByEmployeeId(employeeId);
 
-			Optional<Employee> findByEmployeeId = employeeRepository.findByEmployeeId(employeeId);
+				if (findByEmployeeId.isPresent()) {
+					entity = findByEmployeeId.get();
+					entity.getEmployeePrimaryInfo().setStatus(status);
+					inActive=new EmployeeInActive();
+					BeanUtils.copyProperties(entity, inActive);
 
-			if (findByEmployeeId.isPresent()) {
-				entity = findByEmployeeId.get();
-				entity.getEmployeePrimaryInfo().setStatus(status);
+					inActive=employeeInActiveRepository.save(inActive);
+					
+					if (inActive==null ) {
+						throw new RuntimeException("Failed to Change Status");
+						
+					}
+					else {
+						employeeRepository.delete(entity); 
+					}
+				} else {
+					log.error(methodName + "findByEmployeeId returned====>" + findByEmployeeId);
+					throw new RuntimeException("No Employee Found for the given data");
+				}
+				break;
+			case active:
+				Optional<EmployeeInActive> findByEmployeeId2 = employeeInActiveRepository.findByEmployeeId(employeeId);
 
-				employeeRepository.save(entity);
-			} else {
-				log.error(methodName + "findByEmployeeId returned====>" + findByEmployeeId);
+				if (findByEmployeeId2.isPresent()) {
+					inActive = findByEmployeeId2.get();
+					entity.getEmployeePrimaryInfo().setStatus(status);
+					entity=new Employee();
+					BeanUtils.copyProperties(inActive,entity);
+
+					entity=employeeRepository.save(entity);
+					
+					if (entity!=null && entity.getBankDetail().getAccountType()!=null) {
+						throw new RuntimeException("Failed to Change Status");
+						
+					}
+					else {
+						employeeInActiveRepository.delete(inActive); 
+					}
+				} else {
+					log.error(methodName + "findByEmployeeId returned====>" + findByEmployeeId2);
+					throw new RuntimeException("No Employee Found for the given data");
+				}
+			default:
+				
+				break;
 			}
+
+		
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -431,8 +479,18 @@ public class MentorServiceImpl implements MentorService {
 			if (attendanceDto.getBatchId() != findByEmployeeId.get().getBatchId()) {
 				throw new RuntimeException("Please Enter Correct batch Id for the Given Employee");
 			}
-
 			SimpleDateFormat dateOnly = new SimpleDateFormat("MM/dd/yyyy");
+			String format = dateOnly.format(attendanceDto.getDate());
+			AttendanceEntity attendance= attendanceRepo.findByEmployeeIdAndDate(employeeId,format);
+			if(attendance!=null) {
+				attendance.setAttendance(attendanceDto.getAttendance());
+				log.info("Formatted Date"
+						+ ""+format);
+				attendance.setDate(format);
+				entity = attendanceRepo.save(attendance);
+				return entity;
+			}
+//			SimpleDateFormat dateOnly = new SimpleDateFormat("MM/dd/yyyy");
 			dateOnly.format(attendanceDto.getDate());
 			entity.setDate(dateOnly.format(attendanceDto.getDate()));
 			entity = attendanceRepo.save(entity);

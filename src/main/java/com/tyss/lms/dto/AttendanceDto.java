@@ -2,8 +2,11 @@ package com.tyss.lms.dto;
 
 import java.util.Date;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +15,14 @@ import lombok.Data;
 @Builder
 public class AttendanceDto {
 	
-	@NotBlank
-	@NotNull
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	@JsonFormat(pattern = "MM/dd/yyyy")
 	private Date date;
-	@NotBlank
-	@NotNull
+	@NotNull(message = "batch id cant be null")
 	private long batchId;
-	@NotBlank
 	@NotNull
+	@NotNull(message = "employeeId id cant be null")
 	private String employeeId;
-	@NotBlank
 	@NotNull
 	private AttendanceEnum attendance;
 

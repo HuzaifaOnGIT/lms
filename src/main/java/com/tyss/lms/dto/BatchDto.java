@@ -11,7 +11,6 @@ import lombok.Data;
 public class BatchDto {
 
 	@NotNull
-	@NotBlank
 	private Long Id;
 	private String batchName;
 	private String mentorName;

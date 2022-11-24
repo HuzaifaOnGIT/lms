@@ -32,13 +32,10 @@ public class EmployeeDto {
 //	private String employeeId;
 
 	@NotNull
-	@NotBlank
 	private int yop;
 	@NotNull
-	@NotBlank
 	private String highestDegree;
 	@NotNull
-	@NotBlank
 	private long totalExperience;
 	@NotNull
 	private EmployeePrimaryInfo employeePrimaryInfo;

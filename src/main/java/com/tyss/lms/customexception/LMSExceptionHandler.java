@@ -46,7 +46,7 @@ public class LMSExceptionHandler extends ResponseEntityExceptionHandler {
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	
+//	
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
 //    public ResponseEntity<ValidationResponse> handleInvalidArgument(MethodArgumentNotValidException ex) {

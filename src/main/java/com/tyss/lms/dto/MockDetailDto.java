@@ -15,17 +15,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MockDetailDto {
 
-	@NotBlank
+
 	@NotNull
 	private int mockNo;
-	@NotBlank
-	@NotNull
+
 	private Integer batchId;
-	@NotBlank
-	@NotNull
+
 	private String batchName;
-	@NotBlank
-	@NotNull
+
 	private String mentorName;
 	@NotNull
 	private List<String> technologies;
@@ -35,7 +32,6 @@ public class MockDetailDto {
 	@NotBlank
 	@NotNull
 	private String endDate;
-	@NotBlank
 	@NotNull
 	private Status status;
 }

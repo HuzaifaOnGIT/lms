@@ -15,4 +15,7 @@ public interface MockRatingRepository extends  PagingAndSortingRepository<MockRa
 
 	Optional<List<MockRatings>> findAllByEmployeeIdAndMockNo(String employeeId, int mockNo);
 
+
+	Optional<List<MockRatings>> findAllByEmployeeId(String empId);
+
 }
