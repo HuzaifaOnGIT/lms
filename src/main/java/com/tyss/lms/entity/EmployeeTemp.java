@@ -14,6 +14,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.tyss.lms.dto.ApprovalStatus;
 
 import lombok.AllArgsConstructor;
@@ -52,32 +55,31 @@ public class EmployeeTemp implements Serializable {
 	@JoinColumn(name = "secondaryinfo_Id")
 	private EmployeeSecondaryInfo employeeSecondaryInfo;
 	
-//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )  
-	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	@JoinColumn(name = "education_Id")
 	private List<EmployeeEducationInfo> educationInfos;
 	
-//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )  
-	@OneToMany(cascade =  {CascadeType.ALL} )  
-	@JoinColumn(name = "address_Id")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	@JoinColumn(name = "address_id")
 	private List<EmployeeAddressInfo> addressInfos;
 	
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "bank_Id")
 	private EmployeeBankDetail bankDetail;
-	
-//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )  
-	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	@JoinColumn(name = "technical_Id")
 	private List<EmployeeTechnicalSkillsInfo> employeeTechnicalSkillsInfo;
 	
-//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )  
-	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT) 
 	@JoinColumn(name = "experience_Id")
 	private List<EmployeeExperienceInfo> employeeExperienceInfos;
 	
-//	@OneToMany(cascade =  {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} , fetch = FetchType.EAGER)  
-	@OneToMany(cascade =  {CascadeType.ALL} )  
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	@JoinColumn(name = "contact_Id")
 	private List<EmployeeContactInfo> contactInfos;
 	

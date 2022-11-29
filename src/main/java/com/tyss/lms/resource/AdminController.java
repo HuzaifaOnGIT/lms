@@ -180,7 +180,7 @@ public class AdminController {
 	
 	@PostMapping("/employee/approve")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseMessage> approveEmployee(@Valid  @RequestBody ApproveRejectDto approveDto) {
+	public ResponseEntity<ResponseMessage> approveEmployee( @RequestBody ApproveRejectDto approveDto) {
 
 		Employee employee = adminService.approveEmployee(approveDto);
 		if (employee != null) {

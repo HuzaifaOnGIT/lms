@@ -62,7 +62,7 @@ public class MentorServiceImpl implements MentorService {
 
 	@Autowired
 	AuthTokenFilter userDetailService;
-	
+
 	@Autowired
 	private EmployeeInActiveRepository employeeInActiveRepository;
 
@@ -160,7 +160,7 @@ public class MentorServiceImpl implements MentorService {
 	public Employee changeStatus(String employeeId, EmployeeStatus status) {
 		String methodName = "changeStatus";
 		Employee entity = null;
-		EmployeeInActive inActive=null;
+		EmployeeInActive inActive = null;
 		try {
 
 			entity = new Employee();
@@ -168,21 +168,30 @@ public class MentorServiceImpl implements MentorService {
 			case absconded:
 			case terminated:
 				Optional<Employee> findByEmployeeId = employeeRepository.findByEmployeeId(employeeId);
+				log.info(methodName + "findByEmployeeId" + findByEmployeeId.get());
 
 				if (findByEmployeeId.isPresent()) {
 					entity = findByEmployeeId.get();
 					entity.getEmployeePrimaryInfo().setStatus(status);
-					inActive=new EmployeeInActive();
+					inActive = new EmployeeInActive();
 					BeanUtils.copyProperties(entity, inActive);
+					log.info("inActive===>" + entity);
 
-					inActive=employeeInActiveRepository.save(inActive);
-					
-					if (inActive==null ) {
-						throw new RuntimeException("Failed to Change Status");
-						
+					log.info("entity=====>" + inActive);
+					Optional<EmployeeInActive> findByEmployeeId2 = employeeInActiveRepository
+							.findByEmployeeId(employeeId);
+					if (findByEmployeeId2.isPresent()) {
+						throw new RuntimeException("Duplicate Data");
+
 					}
-					else {
-						employeeRepository.delete(entity); 
+
+					EmployeeInActive save = employeeInActiveRepository.save(inActive);
+
+					if (save == null) {
+						throw new RuntimeException("Failed to Change Status");
+
+					} else {
+						employeeRepository.delete(entity);
 					}
 				} else {
 					log.error(methodName + "findByEmployeeId returned====>" + findByEmployeeId);
@@ -191,36 +200,41 @@ public class MentorServiceImpl implements MentorService {
 				break;
 			case active:
 				Optional<EmployeeInActive> findByEmployeeId2 = employeeInActiveRepository.findByEmployeeId(employeeId);
-
+				if(findByEmployeeId2.isEmpty()) {
+					throw new RuntimeException("Employee Not Found"+findByEmployeeId2.get());
+				}
+				log.info("findByEmployeeId2 =================>" + findByEmployeeId2.get());
+				log.info("EmployeeInActive" + findByEmployeeId2.get());
 				if (findByEmployeeId2.isPresent()) {
 					inActive = findByEmployeeId2.get();
-					entity.getEmployeePrimaryInfo().setStatus(status);
-					entity=new Employee();
-					BeanUtils.copyProperties(inActive,entity);
+					entity = new Employee();
+					BeanUtils.copyProperties(inActive, entity);
+					log.info("inActive===>" + entity);
 
-					entity=employeeRepository.save(entity);
-					
-					if (entity!=null && entity.getBankDetail().getAccountType()!=null) {
-						throw new RuntimeException("Failed to Change Status");
-						
-					}
-					else {
-						employeeInActiveRepository.delete(inActive); 
+					entity.getEmployeePrimaryInfo().setStatus(status);
+					log.info("entity=====>" + inActive); 
+
+					entity = employeeRepository.save(entity);
+
+					if (entity == null ) {
+						throw new RuntimeException("Failed to Change Status==> "+entity);
+
+					} else {
+						employeeInActiveRepository.delete(inActive);
 					}
 				} else {
 					log.error(methodName + "findByEmployeeId returned====>" + findByEmployeeId2);
 					throw new RuntimeException("No Employee Found for the given data");
 				}
 			default:
-				
+
 				break;
 			}
-
-		
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error(methodName + e.getMessage());
+			throw e;
 		}
 		return entity;
 
@@ -232,10 +246,10 @@ public class MentorServiceImpl implements MentorService {
 		List<Employee> employee = null;
 		Pageable paging = null;
 		try {
-			employee=new ArrayList<>();
+			employee = new ArrayList<>();
 			paging = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
-			log.info("filter"+filter);	
-			log.info("paging"+paging);	
+			log.info("filter" + filter);
+			log.info("paging" + paging);
 			Page<Employee> findByEmployeeId = employeeRepository
 					.findByEmployeeIdContainingIgnoreCase(filter.getParameter(), paging);
 			employee = findByEmployeeId.toList();
@@ -270,7 +284,6 @@ public class MentorServiceImpl implements MentorService {
 				throw new LMSCustomException("employee not found");
 			}
 			List<Employee> employeeList = findByBatchId.get();
-
 
 			HashMap<Gender, Float> result = new HashMap<>();
 			HashMap<Gender, Employee> result1 = new HashMap<>();
@@ -312,7 +325,7 @@ public class MentorServiceImpl implements MentorService {
 //		Map<String, List<MockRatings>> result = null;
 		StatsDTO yopStatsDTO = new StatsDTO();
 //		List<Map<String,Integer> >res=new ArrayList<>();
-		Map<Integer,Integer> sres=new HashMap<>();
+		Map<Integer, Integer> sres = new HashMap<>();
 		try {
 
 			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
@@ -320,21 +333,19 @@ public class MentorServiceImpl implements MentorService {
 				log.info(methodName, " Null value received ", findByBatchId);
 				throw new LMSCustomException("No Records Found");
 			}
- 			List<Employee> employees = findByBatchId.get();
+			List<Employee> employees = findByBatchId.get();
 			log.info(methodName + employees.toString());
 			log.info(methodName + "=======>" + employees.size());
 
 //			findAllByStudent_Grades_ClassName(final String className);
 
-
 //			Map<String, List<MockRatings>> collect = 
-					Map<Integer, List<Employee>> collect = employees.stream()
-					.collect(Collectors.groupingBy(Employee::getYop));
+			Map<Integer, List<Employee>> collect = employees.stream().collect(Collectors.groupingBy(Employee::getYop));
 
-			collect.forEach((k,v)->{
+			collect.forEach((k, v) -> {
 				sres.put(k, v.size());
 //				res.add(sres)		;	
-				});
+			});
 
 			yopStatsDTO.setYopDetail(sres);
 		} catch (Exception e) {
@@ -351,7 +362,7 @@ public class MentorServiceImpl implements MentorService {
 		Map<String, List<MockRatings>> result = null;
 		StatsDTO performanceStatsDTO = new StatsDTO();
 //		List<Map<String,Integer> >res=new ArrayList<>();
-		Map<String,Integer> sres=new HashMap<>();
+		Map<String, Integer> sres = new HashMap<>();
 		try {
 
 			Optional<List<MockRatings>> findByBatchId = mockRatingRepository.findAllByBatchId(batchId);
@@ -359,7 +370,7 @@ public class MentorServiceImpl implements MentorService {
 				log.info(methodName, " Null value received ", findByBatchId);
 				throw new LMSCustomException("No Records Found");
 			}
- 			List<MockRatings> mockRatings = findByBatchId.get();
+			List<MockRatings> mockRatings = findByBatchId.get();
 			log.info(methodName + mockRatings.toString());
 			log.info(methodName + "=======>" + mockRatings.size());
 
@@ -370,10 +381,10 @@ public class MentorServiceImpl implements MentorService {
 			Map<String, List<MockRatings>> collect = mockRatings.stream()
 					.collect(Collectors.groupingBy(MockRatings::getOverallFeedback));
 
-			collect.forEach((k,v)->{
+			collect.forEach((k, v) -> {
 				sres.put(k, v.size());
 //				res.add(sres)		;	
-				});
+			});
 
 			performanceStatsDTO.setPerformance(sres);
 		} catch (Exception e) {
@@ -386,49 +397,11 @@ public class MentorServiceImpl implements MentorService {
 
 	@Override
 	public StatsDTO experienceStats(long batchId) {
-		
-			String methodName = "experienceStats";
-			StatsDTO expStatsDTO = new StatsDTO();
-//			List<Map<String,Integer> >res=new ArrayList<>();
-			Map<Long,Integer> sres=new HashMap<>();
-			try {
 
-				Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
-				if (findByBatchId.isEmpty()) {
-					log.info(methodName, " Null value received ", findByBatchId);
-					throw new LMSCustomException("No Records Found");
-				}
-	 			List<Employee> employees = findByBatchId.get();
-				log.info(methodName + employees.toString());
-				log.info(methodName + "=======>" + employees.size());
-
-//				findAllByStudent_Grades_ClassName(final String className);
-
-
-//				Map<String, List<MockRatings>> collect = 
-						Map<Long, List<Employee>> collect = employees.stream()
-						.collect(Collectors.groupingBy(Employee::getTotalExperience));
-
-				collect.forEach((k,v)->{
-					sres.put(k, v.size());
-//					res.add(sres)		;	
-					});
-
-				expStatsDTO.setExperienceDetail(sres);
-			} catch (Exception e) {
-				e.printStackTrace();
-				log.error(methodName + e.getMessage());
-			}
-
-			return expStatsDTO;
-		}
-
-	@Override
-	public StatsDTO degreeStats(long batchId) {
 		String methodName = "experienceStats";
-		StatsDTO degreeStatsDTO = new StatsDTO();
-//		List<Map<String,Integer> >res=new ArrayList<>();
-		Map<String,Integer> sres=new HashMap<>();
+		StatsDTO expStatsDTO = new StatsDTO();
+//			List<Map<String,Integer> >res=new ArrayList<>();
+		Map<Long, Integer> sres = new HashMap<>();
 		try {
 
 			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
@@ -436,31 +409,68 @@ public class MentorServiceImpl implements MentorService {
 				log.info(methodName, " Null value received ", findByBatchId);
 				throw new LMSCustomException("No Records Found");
 			}
- 			List<Employee> employees = findByBatchId.get();
+			List<Employee> employees = findByBatchId.get();
 			log.info(methodName + employees.toString());
 			log.info(methodName + "=======>" + employees.size());
 
-//			findAllByStudent_Grades_ClassName(final String className);
+//				findAllByStudent_Grades_ClassName(final String className);
 
+//				Map<String, List<MockRatings>> collect = 
+			Map<Long, List<Employee>> collect = employees.stream()
+					.collect(Collectors.groupingBy(Employee::getTotalExperience));
 
-//			Map<String, List<MockRatings>> collect = 
-					Map<String, List<Employee>> collect = employees.stream()
-					.collect(Collectors.groupingBy(Employee::getHighestDegree));
-
-			collect.forEach((k,v)->{
+			collect.forEach((k, v) -> {
 				sres.put(k, v.size());
-//				res.add(sres)		;	
-				});
+//					res.add(sres)		;	
+			});
 
-			log.info( "sres==>"+sres);
-			degreeStatsDTO.setDegreeStats(sres);
-			log.info( "degreeStatsDTO==>"+degreeStatsDTO);
+			expStatsDTO.setExperienceDetail(sres);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error(methodName + e.getMessage());
 		}
 
-		return degreeStatsDTO;	}
+		return expStatsDTO;
+	}
+
+	@Override
+	public StatsDTO degreeStats(long batchId) {
+		String methodName = "experienceStats";
+		StatsDTO degreeStatsDTO = new StatsDTO();
+//		List<Map<String,Integer> >res=new ArrayList<>();
+		Map<String, Integer> sres = new HashMap<>();
+		try {
+
+			Optional<List<Employee>> findByBatchId = employeeRepository.findAllByBatchId(batchId);
+			if (findByBatchId.isEmpty()) {
+				log.info(methodName, " Null value received ", findByBatchId);
+				throw new LMSCustomException("No Records Found");
+			}
+			List<Employee> employees = findByBatchId.get();
+			log.info(methodName + employees.toString());
+			log.info(methodName + "=======>" + employees.size());
+
+//			findAllByStudent_Grades_ClassName(final String className);
+
+//			Map<String, List<MockRatings>> collect = 
+			Map<String, List<Employee>> collect = employees.stream()
+					.collect(Collectors.groupingBy(Employee::getHighestDegree));
+
+			collect.forEach((k, v) -> {
+				sres.put(k, v.size());
+//				res.add(sres)		;	
+			});
+
+			log.info("sres==>" + sres);
+			degreeStatsDTO.setDegreeStats(sres);
+			log.info("degreeStatsDTO==>" + degreeStatsDTO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error(methodName + e.getMessage());
+		}
+
+		return degreeStatsDTO;
+	}
 
 	@Override
 	public AttendanceEntity addAttendance(AttendanceDto attendanceDto) {
@@ -481,11 +491,10 @@ public class MentorServiceImpl implements MentorService {
 			}
 			SimpleDateFormat dateOnly = new SimpleDateFormat("MM/dd/yyyy");
 			String format = dateOnly.format(attendanceDto.getDate());
-			AttendanceEntity attendance= attendanceRepo.findByEmployeeIdAndDate(employeeId,format);
-			if(attendance!=null) {
+			AttendanceEntity attendance = attendanceRepo.findByEmployeeIdAndDate(employeeId, format);
+			if (attendance != null) {
 				attendance.setAttendance(attendanceDto.getAttendance());
-				log.info("Formatted Date"
-						+ ""+format);
+				log.info("Formatted Date" + "" + format);
 				attendance.setDate(format);
 				entity = attendanceRepo.save(attendance);
 				return entity;

@@ -1,6 +1,6 @@
 package com.tyss.lms.entity;
 
-import java.io.Serializable;
+import java.io.Serializable; 
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -16,6 +16,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,40 +51,44 @@ public class Employee implements Serializable {
 	private long totalExperience;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@JoinColumn(name = "emp_primaryId")
 	private EmployeePrimaryInfo employeePrimaryInfo;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@JoinColumn(name = "emp_secondaryId")
 	private EmployeeSecondaryInfo employeeSecondaryInfo;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	@JoinColumn(name = "edu_Id")
 	
 	private List<EmployeeEducationInfo> educationInfos;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	@JoinColumn(name = "addr_Id")
 	private List<EmployeeAddressInfo> addressInfos;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@OneToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+	@JoinColumn(name = "bnkId")
 	private EmployeeBankDetail bankDetail;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@OneToMany(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	@JoinColumn(name = "techId")
 	private List<EmployeeTechnicalSkillsInfo> employeeTechnicalSkillsInfo;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@OneToMany(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	@JoinColumn(name = "expId")
 	private List<EmployeeExperienceInfo> employeeExperienceInfos;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "Id")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	@JoinColumn(name = "contact_id")
 	private List<EmployeeContactInfo> contactInfos;
 	
 	@NotNull
-	@NotBlank
 	private long batchId;
 	
 	
@@ -89,7 +96,7 @@ public class Employee implements Serializable {
 	@NotBlank
 	private String batchName;
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "BatchDetails_id")
+	@JoinColumn(name = "BatchDetailsId")
 	private BatchDetails batchDetails;
 	
 	

@@ -17,6 +17,5 @@ public class ApproveRejectDto {
 	private String employeeId;
 	@NotNull
 	private String batchName;
-	@NotNull
 	private long batchId;
 }
